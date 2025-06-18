@@ -318,52 +318,295 @@ def show_home():
 
 # upgrading the login to show forgot password
 def show_login():
-    # Compact CSS with all original styles
-    st.markdown("""<style>
-    .login-container{max-width:500px;margin:0 auto;padding:2rem}
-    .login-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:3rem 2rem;border-radius:20px;text-align:center;margin-bottom:2rem;box-shadow:0 15px 35px rgba(102,126,234,0.2);position:relative;overflow:hidden}
-    .login-header::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,0.1),transparent);transform:rotate(45deg);animation:shimmer 3s infinite}
-    @keyframes shimmer{0%{transform:translateX(-100%) translateY(-100%) rotate(45deg)}100%{transform:translateX(100%) translateY(100%) rotate(45deg)}}
-    .login-header h1{color:white;font-size:2.8rem;margin:0;font-weight:700;text-shadow:0 2px 10px rgba(0,0,0,0.3);position:relative;z-index:1}
-    .login-header p{color:rgba(255,255,255,0.95);font-size:1.2rem;margin:1rem 0 0 0;font-weight:300;position:relative;z-index:1}
-    .login-card{background:white;padding:2.5rem;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.1);margin-bottom:1.5rem;border:1px solid rgba(0,0,0,0.05);position:relative}
-    .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#667eea,#764ba2,#667eea);border-radius:20px 20px 0 0}
-    .card-header{display:flex;align-items:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:2px solid #f8f9fa}
-    .card-header h3{margin:0;color:#2c3e50;font-size:1.5rem;font-weight:600}
-    .card-icon{font-size:1.8rem;margin-right:0.8rem;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .admin-selector{background:linear-gradient(135deg,#fff3cd 0%,#ffeaa7 100%);padding:1.5rem;border-radius:12px;margin-bottom:2rem;border-left:4px solid #f39c12}
-    .admin-selector h4{color:#8b6914 !important;font-weight:700 !important;text-shadow:0 1px 2px rgba(255,255,255,0.8) !important;margin-bottom:0.5rem !important}
-    .admin-selector p{color:#6c5416 !important;font-weight:600 !important;text-shadow:0 1px 2px rgba(255,255,255,0.8) !important;margin:0 !important}
-    .stTextInput > div > div > input{border:2px solid #495057 !important;border-radius:10px !important;padding:0.75rem 1rem !important;font-size:1rem !important;transition:all 0.3s ease !important;background:#ffffff !important;color:#212529 !important;font-weight:500 !important}
-    .stTextInput > div > div > input::placeholder{color:#6c757d !important;opacity:0.8 !important;font-weight:400 !important}
-    .stTextInput > div > div > input:focus{border-color:#667eea !important;box-shadow:0 0 0 3px rgba(102,126,234,0.2) !important;background:#ffffff !important;color:#212529 !important;outline:none !important}
-    .stRadio > div{background:rgba(255,255,255,0.95) !important;padding:1rem !important;border-radius:8px !important;border:1px solid #dee2e6 !important}
-    .stRadio > div > label{color:#2c3e50 !important;font-weight:600 !important;font-size:1rem !important}
-    .stRadio > div > label > div[data-testid="stMarkdownContainer"]{color:#2c3e50 !important}
-    .stTextInput > label{color:#ffffff !important;font-weight:600 !important;font-size:1rem !important;text-shadow:0 1px 3px rgba(0,0,0,0.5) !important;margin-bottom:0.5rem !important}
-    .stButton > button{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%) !important;color:white !important;border:none !important;padding:1rem 2rem !important;border-radius:12px !important;font-weight:600 !important;font-size:1.1rem !important;box-shadow:0 4px 15px rgba(102,126,234,0.3) !important;transition:all 0.3s ease !important;width:100% !important}
-    .stButton > button:hover{transform:translateY(-2px) !important;box-shadow:0 8px 25px rgba(102,126,234,0.4) !important}
-    .welcome-back{background:linear-gradient(135deg,#d4edda 0%,#c3e6cb 100%);border:1px solid #b8dacc;color:#155724;padding:1rem;border-radius:10px;margin:1rem 0;font-weight:500}
-    .error-message{background:linear-gradient(135deg,#f8d7da 0%,#f1b0b7 100%);border:1px solid #f5c6cb;color:#721c24;padding:1rem;border-radius:10px;margin:1rem 0;font-weight:500}
-    .forgot-section{background:rgba(255,255,255,0.95);padding:1.5rem;border-radius:12px;margin-top:2rem;border:1px solid #dee2e6}
-    .forgot-header{display:flex;align-items:center;margin-bottom:1rem}
-    .forgot-icon{font-size:1.5rem;margin-right:0.8rem;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .forgot-header h4{margin:0;color:#2c3e50;font-size:1.3rem;font-weight:600}
-    .info-text{color:#495057;font-weight:500;margin:0;line-height:1.5}
-    .divider{height:2px;background:linear-gradient(90deg,transparent,#667eea,transparent);margin:2rem 0;border-radius:1px}
-    </style>""", unsafe_allow_html=True)
+    # Modern CSS styling with dark mode compatibility
+    st.markdown("""
+    <style>
+    .login-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    .login-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+        transform: rotate(45deg);
+        animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    .login-header h1 {
+        color: white;
+        font-size: 2.8rem;
+        margin: 0;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 1;
+    }
+    .login-header p {
+        color: rgba(255,255,255,0.95);
+        font-size: 1.2rem;
+        margin: 1rem 0 0 0;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
+    }
+    .login-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.05);
+        position: relative;
+    }
+    .login-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+        border-radius: 20px 20px 0 0;
+    }
+    .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    .card-header h3 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .card-icon {
+        font-size: 1.8rem;
+        margin-right: 0.8rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .admin-selector {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        border-left: 4px solid #f39c12;
+    }
     
-    # Main UI
-    st.markdown('<div class="login-container"><div class="login-header"><h1>🔐 Welcome Back</h1><p>Sign in to continue your learning journey</p></div><div class="login-card"><div class="card-header"><span class="card-icon">👤</span><h3>Account Login</h3></div></div><div class="admin-selector"><h4>⚙️ Login Type</h4><p>Select your login type (Admin features will be available if your account has admin privileges)</p></div>', unsafe_allow_html=True)
+    /* Enhanced admin selector text for better dark mode readability */
+    .admin-selector h4 {
+        color: #8b6914 !important;
+        font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.8) !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .admin-selector p {
+        color: #6c5416 !important;
+        font-weight: 600 !important;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.8) !important;
+        margin: 0 !important;
+    }
+    
+    /* Enhanced text input styling for better visibility */
+    .stTextInput > div > div > input {
+        border: 2px solid #495057 !important;
+        border-radius: 10px !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease !important;
+        background: #ffffff !important;
+        color: #212529 !important;
+        font-weight: 500 !important;
+    }
+    
+    .stTextInput > div > div > input::placeholder {
+        color: #6c757d !important;
+        opacity: 0.8 !important;
+        font-weight: 400 !important;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+        background: #ffffff !important;
+        color: #212529 !important;
+        outline: none !important;
+    }
+    
+    /* Radio button styling for better dark mode visibility */
+    .stRadio > div {
+        background: rgba(255, 255, 255, 0.95) !important;
+        padding: 1rem !important;
+        border-radius: 8px !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .stRadio > div > label {
+        color: #2c3e50 !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+    }
+    
+    .stRadio > div > label > div[data-testid="stMarkdownContainer"] {
+        color: #2c3e50 !important;
+    }
+    
+    /* Text input labels for better visibility */
+    .stTextInput > label {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 1rem 2rem !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+    }
+    .welcome-back {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border: 1px solid #b8dacc;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        font-weight: 500;
+    }
+    .error-message {
+        background: linear-gradient(135deg, #f8d7da 0%, #f1b0b7 100%);
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        font-weight: 500;
+    }
+    
+    /* Forgot section styling */
+    .forgot-section {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .forgot-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .forgot-icon {
+        font-size: 1.5rem;
+        margin-right: 0.8rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .forgot-header h4 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+    
+    .info-text {
+        color: #495057;
+        font-weight: 500;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #667eea, transparent);
+        margin: 2rem 0;
+        border-radius: 1px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    # Main container
+    st.markdown('<div class="login-container">', unsafe_allow_html=True)
+    # Modern header with animation
+    st.markdown("""
+    <div class="login-header">
+        <h1>🔐 Welcome Back</h1>
+        <p>Sign in to continue your learning journey</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Login card
+    st.markdown("""
+    <div class="login-card">
+        <div class="card-header">
+            <span class="card-icon">👤</span>
+            <h3>Account Login</h3>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    # Admin/User selector
+    st.markdown("""
+    <div class="admin-selector">
+        <h4>⚙️ Login Type</h4>
+        <p>Select your login type (Admin features will be available if your account has admin privileges)</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     login_type = st.radio("", ["👤 Normal User", "⚙️ Admin"], horizontal=True)
-    email = st.text_input("📧 Email Address", placeholder="yourname@gmail.com", help="Enter the email address you used to sign up")
-    password = st.text_input("🔑 Password", placeholder="Enter your password", type="password", help="Manually type your password. Avoid browser auto-fill here.")
+    # Login form inputs
+    email = st.text_input("📧 Email Address", 
+                         placeholder="yourname@gmail.com",
+                         help="Enter the email address you used to sign up")
     
+    password = st.text_input("🔑 Password", 
+                           placeholder="Enter your password", 
+                           type="password", 
+                           help="Manually type your password. Avoid browser auto-fill here.")
+
+    # Login button
     login_col1, login_col2 = st.columns([1, 2])
     with login_col1:
         login_clicked = st.button("🚪 Sign In")
-    
     # Login logic
     if login_clicked:
         user = find_user(email, password)
@@ -371,24 +614,52 @@ def show_login():
             st.session_state.logged_in = True
             st.session_state.current_user = user
             st.session_state.selected_login_type = login_type
-            st.markdown(f'<div class="welcome-back">✅ <strong>Welcome back, {user["Name"]}!</strong><br>You\'re being redirected to your dashboard...</div>', unsafe_allow_html=True)
+
+            st.markdown(f"""
+            <div class="welcome-back">
+                ✅ <strong>Welcome back, {user['Name']}!</strong><br>
+                You're being redirected to your dashboard...
+            </div>
+            """, unsafe_allow_html=True)
             st.rerun()
         else:
-            st.markdown('<div class="error-message">❌ <strong>Invalid credentials</strong><br>Please check your email and password and try again.</div>', unsafe_allow_html=True)
-    
+            st.markdown("""
+            <div class="error-message">
+                ❌ <strong>Invalid credentials</strong><br>
+                Please check your email and password and try again.
+            </div>
+            """, unsafe_allow_html=True)
+    # Stylish divider
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     # Forgot password section
-    st.markdown('<div class="divider"></div><div class="forgot-section"><div class="forgot-header"><span class="forgot-icon">🔄</span><h4>Forgot Your Password?</h4></div><p class="info-text">No worries! Enter your email address below and we\'ll send your password to your inbox.</p></div>', unsafe_allow_html=True)
-    
-    forgot_email = st.text_input("📨 Email for password reset", key="forgot_email", placeholder="Enter your registered email", help="We'll send your password to this email address")
+    st.markdown("""
+    <div class="forgot-section">
+        <div class="forgot-header">
+            <span class="forgot-icon">🔄</span>
+            <h4>Forgot Your Password?</h4>
+        </div>
+        <p class="info-text">
+            No worries! Enter your email address below and we'll send your password to your inbox.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    forgot_email = st.text_input("📨 Email for password reset", 
+                               key="forgot_email",
+                               placeholder="Enter your registered email",
+                               help="We'll send your password to this email address")
     
     if st.button("📬 Send My Password"):
         user = next((u["fields"] for u in fetch_users() if u["fields"].get("Email") == forgot_email), None)
         if user:
             sent = send_password_email(forgot_email, user["Password"])
-            st.success("✅ Password sent! Please check your email inbox.") if sent else st.warning("⚠️ Could not send the email. Please try again later.")
+            if sent:
+                st.success("✅ Password sent! Please check your email inbox.")
+            else:
+                st.warning("⚠️ Could not send the email. Please try again later.")
         else:
             st.warning("⚠️ No account found with that email address.")
-    
+
     st.markdown('</div>', unsafe_allow_html=True)
 def show_sign_up_or_update():
     # Minified CSS
