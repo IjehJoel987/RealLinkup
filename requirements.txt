@@ -1,0 +1,7 @@
+streamlit==1.44.1
+requests
+streamlit
+requests
+cloudinary
+pillow
+streamlit_autorefresh
