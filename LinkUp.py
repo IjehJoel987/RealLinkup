@@ -3799,50 +3799,26 @@ def show_student_dashboard():
             title = re.sub(r'<[^>]+>', '', title).strip()
             message = re.sub(r'<[^>]+>', '', message).strip()
 
+
+
             if image_url:
-                # Add the modal HTML and script ONCE at the top
-                if 'modal_added' not in st.session_state:
-                    st.markdown("""
-                    <div id="imageModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; 
-                        width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);" onclick="closeImageModal()">
-                        <span style="position: absolute; top: 20px; right: 35px; color: white; font-size: 40px; 
-                            cursor: pointer;" onclick="closeImageModal()">&times;</span>
-                        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-                            <img id="modalImage" src="" style="max-width: 90%; max-height: 90%; border-radius: 10px;">
-                        </div>
-                    </div>
-                
-                    <script>
-                    function openImageModal(url) {
-                        document.getElementById('imageModal').style.display = 'block';
-                        document.getElementById('modalImage').src = url;
-                    }
-                    function closeImageModal() {
-                        document.getElementById('imageModal').style.display = 'none';
-                    }
-                    document.addEventListener('keydown', function(e) {
-                        if (e.key === 'Escape') closeImageModal();
-                    });
-                    </script>
-                    """, unsafe_allow_html=True)
-                    st.session_state.modal_added = True
-            
-                # Announcement with image - Image on top, text below
+                # Announcement with image - Image on top, text below, click to expand
                 st.markdown(f"""
                 <div class="announcement-card" style="overflow: hidden; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <div style="width: 100%; height: 280px; background-image: url('{image_url}'); 
-                        background-size: contain; background-repeat: no-repeat; background-position: center; 
-                        background-color: #f8f9fa; border-radius: 12px 12px 0 0; position: relative; cursor: pointer;"
-                        onclick="openImageModal('{image_url}')">
-                        <div style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); 
-                            color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem;">
-                            📅 {fields.get('Date', 'Unknown Date')}
+                    <a href="{image_url}" target="_blank" title="Click to expand">
+                        <div style="width: 100%; height: 280px; background-image: url('{image_url}'); 
+                            background-size: contain; background-repeat: no-repeat; background-position: center; 
+                            background-color: #f8f9fa; border-radius: 12px 12px 0 0; position: relative; cursor: pointer;">
+                            <div style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); 
+                                color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem;">
+                                📅 {fields.get('Date', 'Unknown Date')}
+                            </div>
+                            <div style="position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7); 
+                                color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem;">
+                                🔍 Click to expand
+                            </div>
                         </div>
-                        <div style="position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7); 
-                            color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem;">
-                            🔍 Click to expand
-                        </div>
-                    </div>
+                    </a>
                     <div style="padding: 1.5rem; background: white; border-radius: 0 0 12px 12px;">
                         <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.8rem; color: #2c3e50;">
                             📌 {title}
@@ -3858,6 +3834,7 @@ def show_student_dashboard():
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
             else:
                 # Regular announcement without image
                 st.markdown(f"""
