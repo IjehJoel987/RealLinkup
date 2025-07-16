@@ -241,7 +241,7 @@ def show_home():
         <div class="stats-container">
             <div class="stat-box"><h3>📚</h3><p>Academic Help</p></div>
             <div class="stat-box"><h3>🤝</h3><p>Peer Matching</p></div>
-            <div class="stat-box"><h3>💼</h3><p>Talent Showcase</p></div>
+            <div class="stat-box"><h3>💼</h3><p>Business Showcase</p></div>
         </div>
     </div>""", unsafe_allow_html=True)
     
