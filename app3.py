@@ -199,7 +199,7 @@ def send_password_email(to_email, password):
         st.error(f"Failed to send email: {e}")
         return False
 # ------------------ Pages ------------------
-# ------------------ LinkUp Marketplace Homepage ------------------
+# ------------------ LinkUp Homepage ------------------
 def show_home():
     # Consolidated CSS for Marketplace Focus
     st.markdown("""<style>
@@ -244,25 +244,21 @@ def show_home():
     
     # Hero Section - Marketplace Focused
     st.markdown("""<div class="hero-section">
-        <div class="hero-title">🛍️ Welcome to <span class="highlight">LinkUp Marketplace</span></div>
+        <div class="hero-title">🛍️ Welcome to <span class="highlight">LinkUp</span></div>
         <div class="hero-subtitle">Where Student Skills Meet Real Opportunities</div>
         <div class="marketplace-tagline">The easiest way to find & hire talented students around you — from designers to tutors to entrepreneurs</div>
-        <div class="quick-actions">
-            <a href="#" class="action-btn">🔍 Find Services</a>
-            <a href="#" class="action-btn">📝 Post a Service</a>
-            <a href="#" class="action-btn">💬 Post Request</a>
-        </div>
+        <div class="marketplace-tagline">Head over to the navigation panel by the top left of the page to signup</div>
     </div>""", unsafe_allow_html=True)
     
     # Logo
     try:
         st.image("linkup_logo.png", use_container_width=True)
     except:
-        st.info("🖼️ Upload your LinkUp Marketplace logo as 'linkup_logo.png' to display it here!")
+        st.info("🖼️ Upload your LinkUp logo as 'linkup_logo.png' to display it here!")
     
     # Popular Service Categories
     st.markdown('<h2 style="text-align:center;color:#2d3748;margin:3rem 0 2rem 0;font-size:2.2rem;">🎯 Popular Services</h2>', unsafe_allow_html=True)
-    
+
     categories = [
         ("🎨", "Design & Creative", "Logos, Posters, UI/UX, Graphics, Photography, Video Editing"),
         ("👨‍🏫", "Tutoring & Academic", "Math, Science, Languages, Essay Writing, Exam Prep"),
@@ -271,20 +267,21 @@ def show_home():
         ("💄", "Beauty & Lifestyle", "Makeup, Hair Styling, Fashion Consulting, Fitness Coaching"),
         ("🛠️", "Services & Tasks", "Event Planning, Virtual Assistant, Research, Delivery")
     ]
-    
+
     categories_html = '<div class="service-categories">'
     for icon, title, desc in categories:
-        categories_html += f'''<div class="category-card">
+        categories_html += f'''<div class="category-card" style="background:#f4f6fa;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
             <span class="category-icon pulse-icon">{icon}</span>
-            <h3>{title}</h3>
-            <p>{desc}</p>
+            <h3 style="color:#222;font-size:1.3rem;margin-bottom:0.5rem;font-weight:600">{title}</h3>
+            <p style="color:#444;font-size:0.95rem;line-height:1.5">{desc}</p>
         </div>'''
     categories_html += '</div>'
     st.markdown(categories_html, unsafe_allow_html=True)
+
     
     # How It Works Section
     st.markdown('''<div class="how-it-works">
-        <h2>🚀 How LinkUp Marketplace Works</h2>
+        <h2>🚀 How LinkUp Works</h2>
         <div class="steps-container">
             <div class="step-card">
                 <div class="step-number">1</div>
@@ -311,7 +308,7 @@ def show_home():
     
     # Feature Highlight
     st.markdown('''<div class="feature-highlight">
-        <h2>✨ Why Choose LinkUp Marketplace?</h2>
+        <h2>✨ Why Choose LinkUp?</h2>
         <p>Built by students, for students - we understand what you need</p>
         <div class="feature-list">
             <div class="feature-item">
@@ -358,11 +355,11 @@ def show_home():
     # Call to Action & Footer
     st.markdown('''<div style="background:linear-gradient(135deg,#48bb78,#38a169);padding:3rem 2rem;border-radius:20px;text-align:center;margin:2rem 0;color:white;">
         <div style="font-size:2.2rem;font-weight:700;margin-bottom:1rem;">Ready to Start?</div>
-        <div style="font-size:1.2rem;margin-bottom:2rem;">Join thousands of students already buying and selling services on LinkUp Marketplace!</div>
+        <div style="font-size:1.2rem;margin-bottom:2rem;">Join thousands of students already buying and selling services on LinkUp!</div>
         <div style="font-size:1.1rem;">📱 Use the sidebar to browse services, post your own, or create a request<br>💼 Turn your skills into income • 🛍️ Find exactly what you need</div>
     </div>
     <div class="footer">
-        <div style="font-size:1.1rem;margin-bottom:1rem;">🛍️ LinkUp Marketplace - Where Student Talent Meets Opportunity</div>
+        <div style="font-size:1.1rem;margin-bottom:1rem;">🛍️ LinkUp - Where Student Talent Meets Opportunity</div>
         <div>Empowering student entrepreneurs • Building the campus economy • Your skills, our platform, endless possibilities</div>
     </div>''', unsafe_allow_html=True)
 
@@ -644,14 +641,22 @@ def show_login():
     
     login_type = st.radio("", ["👤 Normal User", "⚙️ Admin"], horizontal=True)
     # Login form inputs
-    email = st.text_input("📧 Email Address (For security reasons manually input email address, dont use browser auto-fill here)", 
-                         placeholder="yourname@gmail.com",
-                         help="Enter the email address you used to sign up")
-    
-    password = st.text_input("🔑 Password (For security reasons manually input password, dont use browser auto-fill here)", 
-                           placeholder="Enter your password", 
-                           type="password", 
-                           help="Manually type your password. Avoid browser auto-fill here.")
+    email = st.text_input(
+        "📧 Email Address (For security reasons manually input email address, dont use browser auto-fill here)",
+        placeholder="yourname@gmail.com",
+        help="Enter the email address you used to sign up",
+        label_visibility="visible"
+    )
+    st.markdown('<style>.stTextInput label { color: #999 !important; font-weight: 600 !important; }</style>', unsafe_allow_html=True)
+
+    password = st.text_input(
+        "🔑 Password (For security reasons manually input password, dont use browser auto-fill here)",
+        placeholder="Enter your password",
+        type="password",
+        help="Manually type your password. Avoid browser auto-fill here.",
+        label_visibility="visible"
+    )
+    st.markdown('<style>.stTextInput label { color: #999 !important; font-weight: 600 !important; }</style>', unsafe_allow_html=True)
 
     # Login button
     login_col1, login_col2 = st.columns([1, 2])
@@ -748,13 +753,13 @@ def show_sign_up_or_update():
     # Header
     is_update = st.session_state.logged_in
     st.markdown(f"""<div class="main-header">
-        <h1>🛍️ {"Update Your Profile" if is_update else "Join LinkUp Marketplace"}</h1>
+        <h1>🛍️ {"Update Your Profile" if is_update else "Join LinkUp"}</h1>
         <p>{"Enhance your profile to get even better opportunities!" if is_update else "Connect with students and offer your amazing services!"}</p>
     </div>""", unsafe_allow_html=True)
     
     # Account Type Selection (New Addition)
     st.markdown("""<div class="form-section">
-        <h3>🎯 What brings you to LinkUp Marketplace?</h3>
+        <h3>🎯 What brings you to LinkUp?</h3>
         <p>Choose your primary goal (you can always do both!)</p>
         <div class="account-type-cards">
             <div class="type-card">
@@ -776,10 +781,15 @@ def show_sign_up_or_update():
     </div>""", unsafe_allow_html=True)
     
     # User Type Selection
-    st.markdown("""<div class="section-card">
-        <div class="section-header"><span class="section-icon">🎭</span><h3>What type of user are you?</h3></div>
-        <p>Choose how you plan to use LinkUp Marketplace:</p>
-        <div class="user-type-cards">""", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-card">
+        <div class="section-header" style="color:#222;">
+            <span class="section-icon">🎭</span>
+            <h3 style="color:#222;">Choose how you plan to use LinkUp Marketplace</h3>
+        </div>
+        <p style="color:#333;">Choose how you plan to use LinkUp:</p>
+        <div class="user-type-cards">
+    """, unsafe_allow_html=True)
     
     # Create three columns for user type cards
     col1, col2, col3 = st.columns(3)
@@ -808,20 +818,24 @@ def show_sign_up_or_update():
         "Buyer": {"icon": "🛒", "title": "Service Buyer", "desc": "You can browse services, post requests for what you need, and hire talented students."},
         "Both": {"icon": "🔄", "title": "Marketplace Member", "desc": "You can both offer your services to others and hire services you need from other students."}
     }
-    
+
     selected_info = user_type_info[st.session_state.user_type]
-    st.markdown(f"""<div class="info-box">
-        <h4>{selected_info['icon']} You selected: {selected_info['title']}</h4>
-        <p style="margin:0;">{selected_info['desc']}</p>
+    st.markdown(f"""<div class="info-box" style="background:linear-gradient(135deg,#232526 0%,#414345 100%);color:#fff;">
+        <h4 style="color:#fff;">{selected_info['icon']} You selected: {selected_info['title']}</h4>
+        <p style="margin:0;color:#f1f1f1;">{selected_info['desc']}</p>
     </div>""", unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+
     
     # Personal Information
-    st.markdown("""<div class="section-card">
-        <div class="section-header"><span class="section-icon">👤</span><h3>Personal Information</h3></div>
-        <p>Let's get to know you better so others can connect with you:</p>
-    </div>""", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-card">
+        <div class="section-header" style="color:#222;">
+            <span class="section-icon">👤</span>
+            <h3 style="color:#222;">Personal Information</h3>
+        </div>
+        <p style="color:#333;">Let's get to know you better so others can connect with you:</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
@@ -838,10 +852,15 @@ def show_sign_up_or_update():
                                    help="Add a photo so people can recognize you!")
     
     # Bio section
-    st.markdown("""<div class="section-card">
-        <div class="section-header"><span class="section-icon">✍️</span><h3>Tell us about yourself</h3></div>
-        <p>Write a short bio to help others understand who you are and what you're about:</p>
-    </div>""", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-card">
+        <div class="section-header" style="color:#222;">
+            <span class="section-icon">✍️</span>
+            <h3 style="color:#222;">Tell us about yourself</h3>
+        </div>
+        <p style="color:#333;">Write a short bio to help others understand who you are and what you're about:</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.session_state.user_type == "Seller":
         bio_placeholder = "Hi! I'm a talented student who offers amazing graphic design services. I love creating beautiful logos and posters that make businesses stand out..."
@@ -3290,17 +3309,15 @@ st.sidebar.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Add a prominent close button for mobile users
-if st.sidebar.button("✕ Close Menu", key="close_nav_mobile", help="Close navigation menu"):
-    st.markdown("""
-    <script>
-        // Close sidebar programmatically
-        const sidebarClose = document.querySelector('[data-testid="collapsedControl"]');
-        if (sidebarClose) {
-            sidebarClose.click();
-        }
-    </script>
-    """, unsafe_allow_html=True)
+# Sidebar close instruction (replace your button)
+st.sidebar.markdown("""
+<div style="text-align:center; margin:1rem 0;">
+    <span style="font-size:1.2rem;">✕</span>
+    <div style="font-size:0.95rem; color:#666;">
+        To close this menu, tap the arrow at the top right.
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # Enhanced User Info Display with mobile optimization
 if st.session_state.logged_in:
