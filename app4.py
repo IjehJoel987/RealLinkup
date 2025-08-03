@@ -33,6 +33,30 @@ if "logged_in" not in st.session_state:
     st.session_state.current_user = {}
 
 # ------------------ Airtable Functions ------------------
+
+@st.cache_data(ttl=120)
+def fetch_requests():
+    url = f"https://api.airtable.com/v0/{BASE_ID}/Request"
+    headers = {"Authorization": f"Bearer {AIRTABLE_PAT}", "Content-Type": "application/json"}
+    res = requests.get(url, headers=headers)
+    if res.ok:
+        return res.json()["records"]
+    return []
+
+
+@st.cache_data(ttl=120)  # Cache for 2 minutes
+def fetch_services():
+    url = f"https://api.airtable.com/v0/{BASE_ID}/Talent"
+    headers = {
+        "Authorization": f"Bearer {AIRTABLE_PAT}",
+        "Content-Type": "application/json"
+    }
+    res = requests.get(url, headers=headers)
+    if res.ok:
+        return res.json()["records"]
+    return []
+
+
 @st.cache_data(ttl=300)  # Cache for 5 minutes (300 seconds)
 def fetch_users():
     res = requests.get(AIRTABLE_URL, headers=HEADERS)
@@ -1249,7 +1273,7 @@ def show_chats():
     }
     </style>
     """, unsafe_allow_html=True)
-    
+
     st.session_state.page = None
 # Talent zone
 # Enhanced Talent Zone with Chat Navigation Popup
@@ -1864,9 +1888,7 @@ def Talent_Zone():
     st.markdown('<div class="section-header">🔍 Explore Available Services</div>', unsafe_allow_html=True)
 
     try:
-        list_response = requests.get(url, headers=headers)
-        list_response.raise_for_status()
-        records = list_response.json().get("records", [])
+        records = fetch_services()
 
         # Stats Section (keeping your existing logic)
         if records:
@@ -2459,6 +2481,7 @@ def update_profile():
                     st.success(success_message)
                     st.session_state.current_user = response.json().get("fields", {})
                     st.balloons()
+                    st.cache_data.clear()
                     time.sleep(1)
                     st.rerun()
                 else:
@@ -2538,6 +2561,7 @@ def post_request():
                 response.raise_for_status()
                 st.success("✅ Your Request has been posted successfully!")
                 st.balloons()
+                st.cache_data.clear()
             except requests.exceptions.RequestException as e:
                 st.error("❌ Failed to post Request.")
                 st.exception(e)
@@ -2548,9 +2572,7 @@ def post_request():
     st.markdown('<div class="section-header">🔎 Browse Open Requests</div>', unsafe_allow_html=True)
     
     try:
-        list_response = requests.get(url, headers=headers)
-        list_response.raise_for_status()
-        records = list_response.json().get("records", [])
+        records = fetch_requests()
 
         if not records:
             st.markdown('<div class="no-requests"><h3>📭 No Requests Yet</h3><p>Be the first to post a request and find the help you need!</p></div>', unsafe_allow_html=True)
