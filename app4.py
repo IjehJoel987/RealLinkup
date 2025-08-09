@@ -1283,7 +1283,7 @@ def Talent_Zone():
         "Authorization": f"Bearer {AIRTABLE_PAT}",
         "Content-Type": "application/json"
     }
-    # Custom CSS for enhanced UI (keeping your existing styles + new popup styles)
+    # Custom CSS for enhanced UI (keeping your existing styles + new marketplace styles)
     st.markdown("""
     <style>
     .talent-header {
@@ -1742,8 +1742,233 @@ def Talent_Zone():
         align-items: center;
         justify-content: space-between;
     }
+
+    /* JIJI-STYLE MARKETPLACE CARD LAYOUT */
+    .marketplace-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin: 20px 0;
+    }
     
-    </style>
+    @media (max-width: 1200px) {
+        .marketplace-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .marketplace-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .marketplace-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .marketplace-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .marketplace-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transform: translateY(-3px);
+        border-color: #667eea;
+    }
+    
+    .card-image-container {
+        width: 100%;
+        height: 200px;
+        background: #f8f9fa;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .marketplace-card:hover .card-image {
+        transform: scale(1.05);
+    }
+    
+    .image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 3rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .card-content {
+        padding: 15px;
+    }
+    
+    .card-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #e74c3c;
+        margin-bottom: 8px;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .card-description {
+        font-size: 0.85rem;
+        color: #666;
+        line-height: 1.4;
+        margin-bottom: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        color: #777;
+    }
+    
+    .seller-name {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        color: #ffd700;
+        font-size: 0.9rem;
+    }
+    
+    .view-profile-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .view-profile-btn:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .verification-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #27ae60;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+    }
+    
+    .unverified-warning {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    }
+    
+    .popular-tag {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #f39c12;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+    }
+
+    .grid-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        padding: 0 10px;
+    }
+    
+    .results-count {
+        font-size: 1.1rem;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    .view-toggle {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .toggle-btn {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .toggle-btn.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+        </style>
     """, unsafe_allow_html=True)
 
     # Safety Modal - Show on first visit or when user wants to see it
@@ -1856,8 +2081,8 @@ def Talent_Zone():
     # Header Section
     st.markdown("""
     <div class="talent-header">
-        <h1>🎯 Connect</h1>
-        <p>Connect, Create, and Collaborate with Amazing Talents</p>
+        <h1>🎯 LinkUp Marketplace</h1>
+        <p>Discover, Hire, and Collaborate with the Best Talents Around You</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1869,7 +2094,7 @@ def Talent_Zone():
     </div>
     """, unsafe_allow_html=True)
 
-# Verification promotion banner - Add this after the safety disclaimer
+    # Verification promotion banner
     st.markdown("""
     <div style="background: linear-gradient(135deg, #ffeaa7, #fab1a0); border: 3px solid #e17055; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; text-align: center; animation: subtle-pulse 2s infinite;">
         <h3 style="margin: 0 0 0.5rem 0; color: #2d3436;">🔒 Still Unverified? You're Missing Out!</h3>
@@ -1882,7 +2107,6 @@ def Talent_Zone():
     }
     </style>
     """, unsafe_allow_html=True)
-
 
     # Display Existing Services
     st.markdown('<div class="section-header">🔍 Explore Available Services</div>', unsafe_allow_html=True)
@@ -1912,220 +2136,246 @@ def Talent_Zone():
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            # --- Modern Search & Filter Bar (Streamlit-native, not markdown) ---
+            with st.container():
+                st.markdown("""
+                <div style="
+                    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                    border-radius: 16px;
+                    box-shadow: 0 4px 16px rgba(102,126,234,0.08);
+                    padding: 1.5rem 2rem 1rem 2rem;
+                    margin: 1.5rem 0 2.5rem 0;
+                    border: 1.5px solid #e5e5e5;
+                ">
+                """, unsafe_allow_html=True)
+                col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+                with col1:
+                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">🔍 Search</span>', unsafe_allow_html=True)
+                    search_query = st.text_input("", placeholder="e.g., design, development", key="search_query")
+                with col2:
+                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">🎯 Category</span>', unsafe_allow_html=True)
+                    selected_title = st.selectbox(
+                        "",
+                        options=["All"] + sorted(set([r["fields"].get("Title", "Others") for r in records])),
+                        key="selected_title"
+                    )
+                with col3:
+                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">💰 Sort</span>', unsafe_allow_html=True)
+                    sort_order = st.radio(
+                        "",
+                        ["None", "Price: Low to High", "Price: High to Low", "Highest Rated"],
+                        key="sort_order"
+                    )
+                with col4:
+                    st.markdown('<span style="font-weight:600; color:#27ae60; font-size:1rem;">✓ Verified Only</span>', unsafe_allow_html=True)
+                    show_verified_only = st.checkbox("", key="show_verified_only")
+                st.markdown("</div>", unsafe_allow_html=True)
 
-        # Search and Filter Section (keeping your existing logic)
-        st.markdown('<div class="search-container">', unsafe_allow_html=True)
-        st.markdown("### 🔎 Search & Filter Services")
-        
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            search_query = st.text_input("🔍 Search by keyword", placeholder="e.g., 'design', 'development'").lower()
-        with col2:
-            all_titles = sorted(set([r["fields"].get("Title", "Others") for r in records]))
-            selected_title = st.selectbox("🎯 Filter by Category", options=["All"] + all_titles)
-        with col3:
-            sort_order = st.radio("💰 Sort by", ["None", "Price: Low to High", "Price: High to Low", "Highest Rated"])
-        with col4:  # You'll need to change col3 to col4 above
-            show_verified_only = st.checkbox("✓ Verified Only")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
 
-        # Apply filters (keeping your existing logic with rating sort added)
-        if search_query:
-            records = [
-                r for r in records
-                if search_query in r["fields"].get("Title", "").lower()
-                or search_query in r["fields"].get("Description", "").lower()
-            ]
+            # --- End Modern Search & Filter Bar ---
+# After filtering/sorting, before showing results grid
+            active_filters = []
+            if search_query:
+                active_filters.append(f"🔍 <b>Search:</b> <span style='color:#764ba2'>{search_query}</span>")
+            if selected_title != "All":
+                active_filters.append(f"🎯 <b>Category:</b> <span style='color:#764ba2'>{selected_title}</span>")
+            if show_verified_only:
+                active_filters.append("✅ <b>Verified Only</b>")
+            if sort_order and sort_order != "None":
+                active_filters.append(f"💰 <b>Sort:</b> <span style='color:#764ba2'>{sort_order}</span>")
 
-        if selected_title != "All":
-            records = [r for r in records if r["fields"].get("Title") == selected_title]
-        if show_verified_only:
-            records = [r for r in records if r["fields"].get("Verified", False)]
-        if sort_order == "Price: Low to High":
-            records.sort(key=lambda r: r["fields"].get("Price", 0))
-        elif sort_order == "Price: High to Low":
-            records.sort(key=lambda r: r["fields"].get("Price", 0), reverse=True)
-        elif sort_order == "Highest Rated":
-            records.sort(key=lambda r: calculate_average_rating(r["fields"]), reverse=True)
-
-        if not records:
-            st.markdown("""
-            <div class="no-services">
-                <h3>🤷‍♂️ No Services Found</h3>
-                <p>Try adjusting your search criteria or be the first to post a service!</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"<h3 style='color: #2c3e50; margin: 2rem 0 1rem 0;'>📋 Found {len(records)} Service(s)</h3>", unsafe_allow_html=True)
-            
-            for record in records:
-                fields = record.get("fields", {})
-                requester = fields.get("Name", "Unknown")
-                title = fields.get("Title", "No Title")
-                description = fields.get("Description", "No description")
-                price = fields.get("Price", 0)
-                contact_pref = fields.get("Contact_pref", "Not specified")
-                contact = fields.get("Contact", "Not provided")
-                record_id = record["id"]
-
-                # Calculate rating info
-                avg_rating = calculate_average_rating(fields)
-                review_count = fields.get("Review_Count", 0)
-
-                # Generate star display
-                if avg_rating > 0:
-                    stars = "⭐" * int(round(avg_rating)) + "☆" * (5 - int(round(avg_rating)))
-                    rating_text = f"({avg_rating:.1f}/5 • {review_count} reviews)"
-                else:
-                    stars = "☆☆☆☆☆"
-                    rating_text = "(No reviews yet)"
-                    
-                    
-                
-                is_verified = fields.get("Verified", False)  # Get verification status
-                verification_badge = '<span class="verified-badge">✓ Verified</span>' if is_verified else ''   
-
-                unverified_warning = ''
-                if not is_verified:
-                    unverified_warning = '''
-                    <div style="background: #fff3cd; border: 2px dashed #856404; border-radius: 8px; padding: 1rem; margin: 0.5rem 0; text-align: center;">
-                        <small style="color: #856404; font-weight: 600;">⚠️ Unverified Service - Proceed with Extra Caution</small>
+            if active_filters:
+                st.markdown(
+                    f"""
+                    <div style="margin: 1rem 0 0.5rem 0; padding: 0.7rem 1.2rem; background: #23272f; border-radius: 10px; border-left: 5px solid #667eea; font-size: 1.05rem; color: #fff;"">
+                        <b>Showing results for:</b> {' | '.join(active_filters)}
                     </div>
-                    '''           
-                st.markdown(f"""
-                <div class="service-card">
-                    <div class="service-title {'verified' if is_verified else ''}"></div>
-                    <div class="service-title">{title}{verification_badge}{unverified_warning}</div>
-                </div>
-                <div class="service-card">
-                    <div class="service-info">
-                        <div class="info-badge">👤 {requester}</div>
-                        <div class="info-badge">📞 {contact_pref}</div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(
+                    f"""
+                    <div style="margin: 1rem 0 0.5rem 0; padding: 0.7rem 1.2rem; background: #23272f; border-radius: 10px; border-left: 5px solid #667eea; font-size: 1.05rem; color: #fff;">
+                        <b>Showing all services</b>
                     </div>
-                    <div class="rating-container">
-                        <span class="stars">{stars}</span>
-                        <span class="rating-text">{rating_text}</span>
-                    </div>
-                    <div class="price-badge">💸 ₦{price:,}</div>
-                    <p style="color: #555; line-height: 1.6; margin: 1rem 0;">{description}</p>
-                    <div class="contact-info">
-                        <strong>📲 Contact:</strong> {contact if contact else "Available via " + contact_pref}
-                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            # (Keep your Python logic for filtering/sorting as before)
+            if search_query:
+                records = [
+                    r for r in records
+                    if search_query in r["fields"].get("Title", "").lower()
+                    or search_query in r["fields"].get("Description", "").lower()
+                ]
+
+            if selected_title != "All":
+                records = [r for r in records if r["fields"].get("Title") == selected_title]
+            if show_verified_only:
+                records = [r for r in records if r["fields"].get("Verified", False)]
+            if sort_order == "Price: Low to High":
+                records.sort(key=lambda r: r["fields"].get("Price", 0))
+            elif sort_order == "Price: High to Low":
+                records.sort(key=lambda r: r["fields"].get("Price", 0), reverse=True)
+            elif sort_order == "Highest Rated":
+                records.sort(key=lambda r: calculate_average_rating(r["fields"]), reverse=True)
+
+            if not records:
+                st.markdown("""
+                <div class="no-services">
+                    <h3>🤷‍♂️ No Services Found</h3>
+                    <p>Try adjusting your search criteria or be the first to post a service!</p>
                 </div>
                 """, unsafe_allow_html=True)
-                # Enhanced action buttons with verification emphasis
-                if is_verified:
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        if st.button("💬 Start Chat", key=f"chat_{record_id}", use_container_width=True):
-                            st.session_state.selected_contact = requester
-                            st.session_state.page = "chat"
-                            st.rerun()
-                    with col2:
+            else:
+                # Grid Header with Results Count
+                st.markdown(f"""
+                <div class="grid-header">
+                    <div class="results-count">📋 Found {len(records)} Service(s)</div>
+                </div>
+                """, unsafe_allow_html=True)
+                        
+            # Create marketplace grid using Streamlit columns
+            # Display services in 4-column grid
+            for i in range(0, len(records), 4):
+                cols = st.columns(4)
+                batch = records[i:i+4]
+                
+                for idx, record in enumerate(batch):
+                    fields = record.get("fields", {})
+                    requester = fields.get("Name", "Unknown")
+                    # Add this block:
+                    profile_image_url = ""
+                    for user in fetch_users():
+                        user_fields = user.get("fields", {})
+                        if user_fields.get("Name") == requester:
+                            profile_image_url = user_fields.get("Profile_Image", "")
+                            break
+                    title = fields.get("Title", "No Title")
+                    description = fields.get("Description", "No description")
+                    price = fields.get("Price", 0)
+                    record_id = record["id"]
+
+                    # Calculate rating info
+                    avg_rating = calculate_average_rating(fields)
+                    review_count = fields.get("Review_Count", 0)
+                    if avg_rating > 0:
+                        stars = "⭐" * min(5, int(round(avg_rating)))
+                        rating_text = f"{avg_rating:.1f}"
+                    else:
+                        stars = "☆☆☆☆☆"
+                        rating_text = "No rating"
+
+                    is_verified = fields.get("Verified", False)
+                    is_popular = fields.get("Popular", False)
+
+                    
+                    
+                    # Get image
+                    works_raw = fields.get("Works", "")
+                    image_url = ""
+                    if works_raw:
+                        urls = [u.strip() for u in works_raw.split("\n") if u.strip()]
+                        if urls:
+                            image_url = urls[0]
+
+                    # Truncate text for card display
+                    short_description = description[:80] + "..." if len(description) > 80 else description
+                    short_title = title[:40] + "..." if len(title) > 40 else title
+
+                    with cols[idx]:
+                        with st.container():
+                            st.markdown(f"""
+                            <div style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; margin-bottom: 20px; position: relative;">
+                                <div style="width: 100%; height: 200px; background: #f8f9fa; position: relative; overflow: hidden;">
+                                    {f'<img src="{image_url}" style="width: 100%; height: 100%; object-fit: cover;" alt="Service Image">' if image_url else '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 3rem; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">📷</div>'}
+                                    <div style="position: absolute; top: 10px; left: 10px; background: {('#27ae60' if is_verified else '#e74c3c')}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+                                        {('✓ Verified' if is_verified else 'Unverified')}
+                                    </div>
+                                    <div style="position: absolute; top: 10px; right: 10px; background: {("#aea027" if is_popular else "#dbd1d0")}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+                                        {('Popular 🔥' if is_popular else 'Seller')}
+                                    </div>
+                                </div>
+                                <div style="padding: 15px;">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                        {f'<img src="{profile_image_url}" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #764ba2;">' if profile_image_url else '<div style="width:36px;height:36px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#aaa;">👤</div>'}
+                                        <span style="font-weight:600;color:#2c3e50;font-size:1rem;">{requester}</span>
+                                    </div>
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #e74c3c; margin-bottom: 8px;">₦{price:,}</div>
+                                    <div style="font-size: 1rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px; line-height: 1.3;">{short_title}</div>
+                                    <div style="font-size: 0.85rem; color: #666; line-height: 1.4; margin-bottom: 12px;">{short_description}</div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; color: #777;">
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            <span>👤</span> {requester}
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 3px; color: #ffd700; font-size: 0.9rem;">
+                                            {stars} <span style="color: #666; font-size: 0.8rem;">({rating_text})</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        
+                        # Action buttons for each card
                         if st.button("👁 View Profile", key=f"profile_{record_id}", use_container_width=True):
                             st.session_state.selected_talent = record
                             st.session_state.page = "view_talent"
                             st.rerun()
-                    with col3:
-                    # Toggle review form
+                        # Review button and form
                         review_key = f"show_review_{record_id}"
-                        if st.button("⭐ Rate & Review", key=f"review_{record_id}", use_container_width=True):
+                        if st.button("⭐ Review", key=f"review_{record_id}", use_container_width=True):
                             if review_key not in st.session_state:
                                 st.session_state[review_key] = False
                             st.session_state[review_key] = not st.session_state[review_key]
                             st.rerun()
-                else:
-                    col1, col2 = st.columns([2, 1])
-                    with col1:
-                        subcol1, subcol2, subcol3 = st.columns(3)
-                        with subcol1:
-                            if st.button("💬 Chat (Risky)", key=f"chat_{record_id}", use_container_width=True, help="⚠️ Unverified user - extra caution advised"):
-                                st.session_state.selected_contact = requester
-                                st.session_state.page = "chat"
-                                st.rerun()
-                        with subcol2:
-                            if st.button("👁 View Profile", key=f"profile_{record_id}", use_container_width=True):
-                                st.session_state.selected_talent = record
-                                st.session_state.page = "view_talent"
-                                st.rerun()
-                        with subcol3:
-                            # Toggle review form
-                            review_key = f"show_review_{record_id}"
-                            if st.button("⭐ Rate & Review", key=f"review_{record_id}", use_container_width=True):
-                                if review_key not in st.session_state:
-                                    st.session_state[review_key] = False
-                                st.session_state[review_key] = not st.session_state[review_key]
-                                st.rerun()
-                    with col2:
-                        st.markdown("""
-                        <div style="background: #e74c3c; color: white; padding: 0.5rem; border-radius: 5px; text-align: center; font-size: 0.8rem;">
-                            <strong>🚨 UNVERIFIED</strong><br>
-                            <small>High Risk</small>
-                        </div>
-                        """, unsafe_allow_html=True)
-
-                
-
-                # Show review form if toggled
-                if st.session_state.get(f"show_review_{record_id}", False):
-                    st.markdown('<div class="review-form">', unsafe_allow_html=True)
-                    st.markdown("### ⭐ Leave a Review")
-                    
-                    with st.form(f"review_form_{record_id}"):
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            reviewer_name = st.text_input("Your Name", placeholder="Enter your name")
-                            rating = st.selectbox("Rating", [5, 4, 3, 2, 1], format_func=lambda x: "⭐" * x + f" ({x}/5)")
-                        with col2:
-                            review_text = st.text_area("Your Review", placeholder="Share your experience...")
                         
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            if st.form_submit_button("Submit Review", use_container_width=True):
-                                if reviewer_name and review_text:
-                                    success = add_review(record_id, reviewer_name, rating, review_text, headers, url)
-                                    if success:
-                                        st.success("✅ Review submitted successfully!")
-                                        st.session_state[f"show_review_{record_id}"] = False
-                                        st.rerun()
-                                    else:
-                                        st.error("❌ Failed to submit review. Please try again.")
-                                else:
-                                    st.error("Please fill in all fields.")
-                        with col2:
-                            if st.form_submit_button("Cancel", use_container_width=True):
-                                st.session_state[f"show_review_{record_id}"] = False
-                                st.rerun()
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-                # Customer Reviews Section as Dropdown
-                reviews_dropdown_key = f"show_reviews_{record_id}"
-                reviews = get_reviews(fields)
-                # Create expander for reviews
-                with st.expander(f"💬 Customer Reviews ({len(reviews)} review{'s' if len(reviews) != 1 else ''})", expanded=False):
-                    if reviews:
-                        for review in reviews:
-                            st.markdown(f"""
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <span class="reviewer-name">{review['name']}</span>
-                                    <span style="color: #6c757d; font-size: 0.8rem;">{review['date']}</span>
-                                </div>
-                                <div class="stars">{"⭐" * review['rating']}</div>
-                                <div class="review-text">{review['text']}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
-                    else:
-                        st.markdown("""
-                        <div class="review-item">
-                            <div style="text-align: center; color: #6c757d; padding: 1rem;">
-                                <p>🤷‍♂️ No reviews yet</p>
-                                <p>Be the first to leave a review for this service!</p>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        # Show review form if toggled
+                        if st.session_state.get(review_key, False):
+                            with st.expander("📝 Leave a Review", expanded=True):
+                                with st.form(f"review_form_{record_id}"):
+                                    reviewer_name = st.text_input("Your Name", key=f"reviewer_{record_id}")
+                                    rating = st.selectbox("Rating", [5, 4, 3, 2, 1], 
+                                                        format_func=lambda x: "⭐" * x + f" ({x}/5)", 
+                                                        key=f"rating_{record_id}")
+                                    review_text = st.text_area("Your Review", key=f"review_text_{record_id}")
+                                    
+                                    col1, col2 = st.columns(2)
+                                    with col1:
+                                        if st.form_submit_button("Submit", use_container_width=True):
+                                            if reviewer_name and review_text:
+                                                success = add_review(record_id, reviewer_name, rating, review_text, headers, url)
+                                                if success:
+                                                    st.success("✅ Review submitted!")
+                                                    st.session_state[review_key] = False
+                                                    st.rerun()
+                                                else:
+                                                    st.error("❌ Failed to submit review.")
+                                            else:
+                                                st.error("Please fill in all fields.")
+                                    with col2:
+                                        if st.form_submit_button("Cancel", use_container_width=True):
+                                            st.session_state[review_key] = False
+                                            st.rerun()
+                        
+                        # Show existing reviews
+                        reviews = get_reviews(fields)
+                        if reviews:
+                            with st.expander(f"💬 Reviews ({len(reviews)})", expanded=False):
+                                for review in reviews:
+                                    st.markdown(f"""
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <span class="reviewer-name">{review['name']}</span>
+                                            <span style="color: #6c757d; font-size: 0.8rem;">{review['date']}</span>
+                                        </div>
+                                        <div class="stars">{"⭐" * review['rating']}</div>
+                                        <div class="review-text">{review['text']}</div>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                        
+                        st.markdown("---")
+                        
 
     except requests.exceptions.RequestException as e:
         st.error("❌ Could not fetch services.")
@@ -2163,6 +2413,169 @@ def Talent_Zone():
     if st.button("🔄 Review Safety Guidelines Again", key="review_safety_again"):
         st.session_state.talent_zone_disclaimer_accepted = False
         st.rerun()
+
+#Profile in talent zone
+def view_talent_profile():
+    
+    # --- Back Button ---
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col1:
+        if st.button("← Back to 🔎 Explore Services", type="secondary", use_container_width=True):
+            st.session_state.page = "Talent zone"
+            st.rerun()
+    
+    talent = st.session_state.get("selected_talent")
+    fields = talent.get("fields", {})
+    name = fields.get("Name", "No Name")
+    record_id = talent.get("id", "")  # Get the record ID
+    requester_name = fields.get("Name", "Unknown")
+    if not talent:
+        st.error("⚠️ No talent selected. Please return to the talent zone and select a profile.")
+        return
+    
+    fields = talent.get("fields", {})
+    name = fields.get("Name", "No Name")
+    title = fields.get("Title", "No Title")
+    description = fields.get("Description", "No description")
+    price = fields.get("Price", 0)
+    works_raw = fields.get("Works", "")
+    whatsapp_number = fields.get("Contact", "")  # Make sure this is a valid WhatsApp number
+
+    # --- Image Gallery (Jiji-style) ---
+    image_urls = [u.strip() for u in works_raw.split("\n") if u.strip()]
+    profile_key = f"profile_img_idx_{fields.get('Name','')}_{fields.get('Title','')}"
+    if profile_key not in st.session_state:
+        st.session_state[profile_key] = 0
+
+    if image_urls:
+        img_idx = st.session_state[profile_key]
+        col_img, col_card = st.columns([2, 1])
+        with col_img:
+            # Show main image
+            st.image(image_urls[img_idx],  use_container_width =True)
+            # Show thumbnails
+            thumb_cols = st.columns(len(image_urls))
+            for i, url in enumerate(image_urls):
+                with thumb_cols[i]:
+                    st.markdown(
+                        f'<img src="{url}" style="width:900px;height:300px;object-fit:cover;border-radius:30px;border:2px solid #eee;margin-bottom:4px;" />',
+                        unsafe_allow_html=True
+                    )
+            st.caption(f"Image {img_idx+1} of {len(image_urls)}")
+    else:
+        col_img, col_card = st.columns([2, 1])
+        with col_img:
+            st.info("No images uploaded for this service.")
+    st.markdown(f"""
+    <div style="
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 18px rgba(102,126,234,0.08);
+        padding: 2.2rem 2rem 1.5rem 2rem;
+        margin: 1.5rem 0 2.2rem 0;
+        border: 1.5px solid #e5e5e5;
+    ">
+        <div style="font-size:2.1rem; font-weight:800; color:#23272f; margin-bottom:0.7rem; letter-spacing:-1px;">
+            {title}
+        </div>
+        <div style="color:#636e72; font-size:1.15rem; line-height:1.7; margin-bottom:0.5rem;">
+            {description}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # --- Right Card: Price & WhatsApp ---
+    with col_card:
+        st.markdown(f"""
+        <div style="background:white;padding:1.5rem 1.2rem 1.2rem 1.2rem;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:1.5rem;">
+            <div style="font-size:2rem;font-weight:700;color:#27ae60;margin-bottom:0.5rem;">₦{price:,}</div>
+            <div style="margin-bottom:1rem;">
+                <span style="background:#e1f7e7;color:#27ae60;padding:0.3rem 0.8rem;border-radius:12px;font-size:0.95rem;font-weight:600;">Negotiable</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # WhatsApp Chat Button
+        if whatsapp_number and whatsapp_number != "Not provided":
+            wa_link = f"https://wa.me/{whatsapp_number}?text=Hi%20{name},%20I'm%20interested%20in%20your%20service%20on%20LinkUp!"
+            st.markdown(
+                f'<a href="{wa_link}" target="_blank" style="display:block;text-align:center;background:#25d366;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on WhatsApp</a>',
+                unsafe_allow_html=True
+            )
+        else:
+            st.info("No WhatsApp contact provided.")
+
+        # Fetch profile image for this talent
+        profile_image_url = ""
+        for user in fetch_users():
+            user_fields = user.get("fields", {})
+            if user_fields.get("Name") == name:
+                profile_image_url = user_fields.get("Profile_Image", "")
+                break
+
+        # Show name and profile image
+        st.markdown("<hr>", unsafe_allow_html=True)
+
+        is_verified = fields.get("Verified", False)
+        verified_badge = (
+            '<span style="display:inline-block;vertical-align:middle;margin-left:7px;">'
+            '<svg width="20" height="20" viewBox="0 0 20 20" style="vertical-align:middle;">'
+            '<circle cx="10" cy="10" r="10" fill="#1DA1F2"/>'
+            '<path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+            '</svg>'
+            '</span>'
+            if is_verified else ""
+        )
+
+        st.markdown(f"""
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+            {f'<img src="{profile_image_url}" alt="Profile" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #764ba2;">' if profile_image_url else '<div style="width:48px;height:48px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#aaa;">👤</div>'}
+            <span style="font-weight:600;font-size:1.1rem;color:#444;">{name}{verified_badge}</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div style="
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.3rem 1rem;
+            border-radius: 14px;
+            margin-top: 1.2rem;
+            box-shadow: 0 4px 18px rgba(102,126,234,0.13);
+            text-align: center;
+            font-size: 1.08rem;
+            font-weight: 500;
+        ">
+            <div style="font-size:1.7rem; margin-bottom:0.5rem;">💬</div>
+            To chat in-app, go to the <b>💬 Chats</b> section in the navigation panel<br>
+            and select <span style="color:#ffeaa7;font-weight:600;">{name}</span>.
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div style="
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(102,126,234,0.07);
+            padding: 1.3rem 1.1rem 1.1rem 1.1rem;
+            margin-top: 1.2rem;
+            border: 1.5px solid #e5e5e5;
+        ">
+            <div style="font-size:1.15rem; font-weight:700; color:#23272f; margin-bottom:0.7rem;">
+                🛡️ Safety tips
+            </div>
+            <ul style="color:#444; font-size:1.02rem; line-height:1.7; margin:0 0 0 1.1rem; padding:0;">
+                <li>Avoid sending any prepayments</li>
+                <li>Meet with the seller at a safe public place</li>
+                <li>Inspect what you're going to buy to make sure it's what you need</li>
+                <li>Check all the docs and only pay if you're satisfied</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    st.session_state.page = None
+
 # Helper Functions
 def calculate_average_rating(fields):
     """Calculate average rating from stored data"""
@@ -2226,84 +2639,7 @@ def add_review(record_id, reviewer_name, rating, review_text, headers, url):
     except Exception as e:
         print(f"Error adding review: {e}")
         return False
-#Profile in talent zone
-def view_talent_profile():
-    # CSS
-    st.markdown('<style>.verified-badge{background:linear-gradient(135deg,#1DA1F2 0%,#0084b4 100%);color:white;padding:0.3rem 0.6rem;border-radius:15px;font-size:0.8rem;font-weight:600;display:inline-flex;align-items:center;gap:0.3rem;margin-left:0.5rem;box-shadow:0 2px 8px rgba(29,161,242,0.3)}.service-title.verified{display:flex;align-items:center;justify-content:space-between}</style>', unsafe_allow_html=True)
-    
-    # Back button
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col1:
-        if st.button("← Back to 🔎 Explore Services", type="secondary", use_container_width=True):
-            st.session_state.page = "Talent zone"
-            st.rerun()
-    
-    talent = st.session_state.get("selected_talent")
-    if not talent:
-        st.error("⚠️ No talent selected. Please return to the talent zone and select a profile.")
-        return
-    
-    # Extract data
-    fields = talent.get("fields", {})
-    name, title, description, price, contact_pref, contact, works_raw = [
-        fields.get(k, default) for k, default in [
-            ("Name", "No Name"), ("Title", "No Title"), ("Description", "No description"),
-            ("Price", 0), ("Contact_pref", "Not specified"), ("Contact", "Not provided"), ("Works", "")
-        ]
-    ]
-    is_verified = fields.get("Verified", False)
-    
-    # Find profile image
-    profile_image_url = ""
-    for user in fetch_users():
-        if user.get("fields", {}).get("Name") == name:
-            profile_image_url = user.get("fields", {}).get("Profile_Image", "")
-            break
-    
-    # Header
-    verification_badge = '<span class="verified-badge">✓</span>' if is_verified else ''
-    profile_img = f'<a href="{profile_image_url}" target="_blank" title="Click to expand"><img src="{profile_image_url}" alt="Profile" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #764ba2;cursor:pointer;"></a>' if profile_image_url else '<div style="width:80px;height:80px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;backdrop-filter:blur(10px);">👤</div>'
-    
-    st.markdown(f'<div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:2rem;border-radius:15px;color:white;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-bottom:2rem"><div style="width:80px;height:80px;margin:0 auto 1rem auto;display:flex;align-items:center;justify-content:center">{profile_img}</div><h1 style="margin:0;font-size:2.5rem;font-weight:700">{name}{verification_badge}</h1><h3 style="margin:0.5rem 0 0 0;opacity:0.9;font-weight:400">{title}</h3></div>', unsafe_allow_html=True)
-    
-    # Main content columns
-    col1, col2 = st.columns([2, 1], gap="large")
-    
-    with col1:
-        # Description
-        st.markdown(f'<div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border-left:4px solid #667eea;margin-bottom:1.5rem"><h4 style="color:#333;margin-bottom:1rem;display:flex;align-items:center"><span style="margin-right:0.5rem">📝</span>About</h4><p style="color:#666;line-height:1.6;margin:0">{description}</p></div>', unsafe_allow_html=True)
-        
-        # Portfolio
-        st.markdown('<div style="margin-bottom:1rem"><h4 style="color:#333;display:flex;align-items:center;margin-bottom:1rem"><span style="margin-right:0.5rem">🎨</span>Portfolio & Work Samples</h4></div>', unsafe_allow_html=True)
-        
-        if works_raw:
-            urls = [u.strip() for u in works_raw.split("\n") if u.strip()]
-            if urls:
-                num_cols = min(len(urls), 3) if len(urls) > 2 else 2
-                cols = st.columns(num_cols, gap="medium")
-                for i, url in enumerate(urls):
-                    with cols[i % num_cols]:
-                        st.markdown('<div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:transform 0.3s ease;margin-bottom:1rem">', unsafe_allow_html=True)
-                        try:
-                            st.image(url, use_container_width=True)
-                        except:
-                            st.markdown(f'<div style="padding:2rem;text-align:center;color:#999;background:#f8f9fa"><p>🖼️ Image unavailable</p><small>{url[:50]}...</small></div>', unsafe_allow_html=True)
-                        st.markdown("</div>", unsafe_allow_html=True)
-            else:
-                st.markdown('<div style="background:#f8f9fa;padding:2rem;border-radius:12px;text-align:center;color:#666;border:2px dashed #ddd"><h5>📁 No work samples available</h5><p>This business hasn\'t uploaded any portfolio items yet.</p></div>', unsafe_allow_html=True)
-        else:
-            st.markdown('<div style="background:#f8f9fa;padding:2rem;border-radius:12px;text-align:center;color:#666;border:2px dashed #ddd"><h5>📁 No work samples available</h5><p>This business hasn\'t uploaded any portfolio items yet.</p></div>', unsafe_allow_html=True)
-    
-    with col2:
-        # Pricing card
-        st.markdown(f'<div style="background:linear-gradient(135deg,#4CAF50 0%,#45a049 100%);color:white;padding:1.5rem;border-radius:12px;text-align:center;box-shadow:0 4px 20px rgba(76,175,80,0.3);margin-bottom:1.5rem"><h4 style="margin:0 0 0.5rem 0;opacity:0.9">Starting Price</h4><h2 style="margin:0;font-size:2rem;font-weight:700">₦{price:,}</h2></div>', unsafe_allow_html=True)
-        
-        # Contact card
-        contact_details = f'<div style="background:#e3f2fd;padding:1rem;border-radius:8px;border-left:4px solid #2196F3"><p style="margin:0;color:#1976D2;font-weight:600">📧 {contact}</p></div>' if contact_pref == "Phone/Email" and contact != "Not provided" else ""
-        
-        st.markdown(f'<div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:1.5rem"><h4 style="color:#333;margin-bottom:1rem;display:flex;align-items:center"><span style="margin-right:0.5rem">📞</span>Contact Information</h4><div style="background:#f8f9fa;padding:1rem;border-radius:8px;margin-bottom:1rem"><p style="margin:0;color:#666;font-size:0.9rem">Preferred Method</p><p style="margin:0.25rem 0 0 0;color:#333;font-weight:600">{contact_pref}</p></div>{contact_details}</div>', unsafe_allow_html=True)
-    
-    st.session_state.page = None
+
 
 def update_profile():
     st.title("⚙️ Post/Update Your Business Profile")
