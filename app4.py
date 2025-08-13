@@ -34,7 +34,7 @@ if "logged_in" not in st.session_state:
 
 # ------------------ Airtable Functions ------------------
 
-@st.cache_data(ttl=120)
+@st.cache_data(ttl=3600000000000000000000000000000) # 1 hour
 def fetch_requests():
     url = f"https://api.airtable.com/v0/{BASE_ID}/Request"
     headers = {"Authorization": f"Bearer {AIRTABLE_PAT}", "Content-Type": "application/json"}
@@ -44,7 +44,7 @@ def fetch_requests():
     return []
 
 
-@st.cache_data(ttl=120)  # Cache for 2 minutes
+@st.cache_data(ttl=360000000000000000000000000000)  # Cache for 1 hour
 def fetch_services():
     url = f"https://api.airtable.com/v0/{BASE_ID}/Talent"
     headers = {
@@ -57,7 +57,7 @@ def fetch_services():
     return []
 
 
-@st.cache_data(ttl=300)  # Cache for 5 minutes (300 seconds)
+@st.cache_data(ttl=360000000000000000)  # Cache for 1 hour
 def fetch_users():
     res = requests.get(AIRTABLE_URL, headers=HEADERS)
     if res.ok:
@@ -65,9 +65,35 @@ def fetch_users():
     st.error("❌ Couldn't load users.")
     return []
 
+@st.cache_data(ttl=3600000000000000000000000000000000)  # Cache for 30 minutes
+def get_users_dict():
+    """Create a dictionary of users keyed by email for faster lookup"""
+    users = fetch_users()
+    users_dict = {}
+    for u in users:
+        f = u.get("fields", {})
+        email = f.get("Email")
+        if email:
+            users_dict[email] = {"id": u["id"], **f}
+    return users_dict
+
 def find_user(email, password):
-    # Check user credentials
-    pass
+    # Check if user is already in session state
+    if "user_cache" in st.session_state:
+        cached_user = st.session_state.user_cache.get(email)
+        if cached_user and cached_user.get("Password") == password:
+            return cached_user
+    
+    # If not in session, fetch from Airtable
+    users_dict = get_users_dict()
+    user = users_dict.get(email)
+    if user and user.get("Password") == password:
+        # Cache in session state
+        if "user_cache" not in st.session_state:
+            st.session_state.user_cache = {}
+        st.session_state.user_cache[email] = user
+        return user
+    return None
 
 def format_time_ago(iso_time_str):
     msg_time = datetime.fromisoformat(iso_time_str.replace('Z', '+00:00'))
@@ -702,12 +728,31 @@ def show_login():
             """, unsafe_allow_html=True)
             st.rerun()
         else:
-            st.markdown("""
-            <div class="error-message">
-                ❌ <strong>Invalid credentials</strong><br>
-                Please check your email and password and try again.
-            </div>
-            """, unsafe_allow_html=True)
+            # First attempt failed - clear cache and try again (in case user just registered)
+            with st.spinner("🔄 Refreshing user data..."):
+                st.cache_data.clear()
+                user = find_user(email, password)
+            
+            if user:
+                st.session_state.logged_in = True
+                st.session_state.current_user = user
+                st.session_state.selected_login_type = login_type
+
+                st.markdown(f"""
+                <div class="welcome-back">
+                    ✅ <strong>Welcome back, {user['Name']}!</strong><br>
+                    You're being redirected to your dashboard...
+                </div>
+                """, unsafe_allow_html=True)
+                st.rerun()
+            else:
+                # Still failed after cache clear - credentials are actually wrong
+                st.markdown("""
+                <div class="error-message">
+                    ❌ <strong>Invalid credentials</strong><br>
+                    Please check your email and password and try again.
+                </div>
+                """, unsafe_allow_html=True)
     # Stylish divider
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     # Forgot password section
@@ -923,8 +968,6 @@ def show_sign_up_or_update():
             "Password": password, 
             "User_Type": st.session_state.user_type,
             "Intent": "Business",  # Set to business since we're now marketplace-focused
-            "College": "",  # Empty since we removed academic details
-            "Department": "",  # Empty since we removed academic details
             "What I know": "Marketplace Services",  # Generic value for backend compatibility
             "Looking For": "Marketplace Opportunities",  # Generic value for backend compatibility
             "Bio": bio, 
