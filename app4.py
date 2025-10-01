@@ -21,7 +21,11 @@ cloudinary.config(
 
 def upload_image_to_cloudinary(file_bytes, filename):
     try:
-        result = cloudinary.uploader.upload(file_bytes, public_id=filename)
+        result = cloudinary.uploader.upload(
+            file_bytes,
+            public_id=filename,
+            resource_type="auto"  # <-- This allows both images and videos
+        )
         return result['secure_url']
     except Exception as e:
         raise Exception("Upload to Cloudinary failed: " + str(e))
@@ -251,166 +255,261 @@ def send_password_email(to_email, password):
 # ------------------ Pages ------------------
 # ------------------ LinkUp Homepage ------------------
 def show_home():
-    # Consolidated CSS for Marketplace Focus
+    # Modern Marketplace CSS
     st.markdown("""<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-    .main-container{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh}
-    .hero-section{text-align:center;padding:3rem 1rem;background:linear-gradient(135deg,rgba(102,126,234,0.9),rgba(118,75,162,0.9));border-radius:20px;margin-bottom:2rem;position:relative;overflow:hidden}
-    .hero-section::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);animation:float 6s ease-in-out infinite}
-    @keyframes float{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-20px) rotate(180deg)}}
-    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-    .hero-title{font-size:3.5rem;font-weight:700;color:#ffffff;margin-bottom:1rem;text-shadow:2px 2px 4px rgba(0,0,0,0.3);position:relative;z-index:2}
-    .hero-subtitle{font-size:1.4rem;color:#f8f9ff;margin-bottom:2rem;position:relative;z-index:2;opacity:0;animation:fadeInUp 1s ease-out 0.5s forwards}
-    .marketplace-tagline{font-size:1.1rem;color:#e2e8f0;margin-bottom:2rem;position:relative;z-index:2;opacity:0;animation:fadeInUp 1s ease-out 1s forwards}
-    .quick-actions{display:flex;justify-content:center;gap:1rem;margin-top:2rem;position:relative;z-index:2;flex-wrap:wrap}
-    .action-btn{background:rgba(255,255,255,0.2);padding:1rem 1.5rem;border-radius:15px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);color:#ffffff;text-decoration:none;transition:all 0.3s ease;font-weight:600}
-    .action-btn:hover{background:rgba(255,255,255,0.3);transform:translateY(-2px)}
-    .service-categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin:2rem 0}
-    .category-card{background:linear-gradient(145deg,#ffffff,#f0f4ff);padding:2rem;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.1);border:1px solid rgba(102,126,234,0.2);transition:all 0.3s ease;position:relative;overflow:hidden;text-align:center}
-    .category-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(102,126,234,0.1),transparent);transition:left 0.5s}
-    .category-card:hover::before{left:100%}
-    .category-card:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(102,126,234,0.2)}
-    .category-icon{font-size:3rem;margin-bottom:1rem;display:block}
-    .category-card h3{color:#4A5568;font-size:1.3rem;margin-bottom:0.5rem;font-weight:600}
-    .category-card p{color:#718096;font-size:0.9rem;line-height:1.4}
-    .how-it-works{background:linear-gradient(145deg,#f7fafc,#edf2f7);padding:2rem;border-radius:20px;margin:2rem 0}
-    .how-it-works h2{text-align:center;color:#2d3748;margin-bottom:2rem;font-size:2rem;font-weight:700}
-    .steps-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
-    .step-card{text-align:center;padding:1.5rem;background:white;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.08)}
-    .step-number{font-size:2.5rem;color:#667eea;font-weight:700;margin-bottom:0.5rem}
-    .step-title{color:#2d3748;font-size:1.1rem;font-weight:600;margin-bottom:0.5rem}
-    .step-desc{color:#718096;font-size:0.9rem;line-height:1.4}
-    .feature-highlight{background:linear-gradient(135deg,#4299e1,#667eea);padding:3rem 2rem;border-radius:20px;text-align:center;margin:2rem 0;color:white;position:relative;overflow:hidden}
-    .feature-highlight::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');pointer-events:none}
-    .feature-highlight h2{font-size:2.2rem;margin-bottom:1rem;position:relative;z-index:2}
-    .feature-highlight p{font-size:1.1rem;margin-bottom:1.5rem;position:relative;z-index:2}
-    .feature-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;position:relative;z-index:2}
-    .feature-item{background:rgba(255,255,255,0.1);padding:1rem;border-radius:10px;backdrop-filter:blur(10px)}
-    .footer{text-align:center;color:#a0aec0;font-size:0.9rem;margin-top:3rem;padding:2rem;background:rgba(255,255,255,0.05);border-radius:15px}
-    .highlight{background:linear-gradient(120deg,#a8edea 0%,#fed6e3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600}
-    .pulse-icon{animation:pulse 2s infinite}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    .main-container{font-family:'Inter',sans-serif;background:#f8f9fa;min-height:100vh}
+    
+    /* Hero Section */
+    .hero-section{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:3.5rem 2rem;border-radius:0 0 30px 30px;margin-bottom:3rem;position:relative;overflow:hidden}
+    .hero-section::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>') bottom/cover no-repeat;opacity:0.3}
+    .hero-content{max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:2}
+    .hero-title{font-size:3rem;font-weight:800;color:#ffffff;margin-bottom:1rem;text-shadow:2px 4px 8px rgba(0,0,0,0.2)}
+    .hero-subtitle{font-size:1.3rem;color:#f0f4ff;margin-bottom:1.5rem;font-weight:500}
+    .hero-cta{background:rgba(255,255,255,0.95);color:#667eea;padding:0.8rem 2rem;border-radius:50px;font-weight:700;font-size:1.1rem;display:inline-block;margin-top:1rem;box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+    
+    /* Stats Bar */
+    .stats-bar{background:white;padding:1.5rem;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.08);margin:-2rem 2rem 3rem 2rem;position:relative;z-index:3;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;text-align:center}
+    .stat-item{padding:0.5rem}
+    .stat-number{font-size:2rem;font-weight:800;color:#667eea;margin-bottom:0.3rem}
+    .stat-label{color:#718096;font-size:0.95rem;font-weight:500}
+    
+    /* Search Section */
+    .search-section{max-width:800px;margin:0 auto 3rem auto;padding:0 2rem}
+    .search-title{font-size:1.8rem;font-weight:700;color:#2d3748;text-align:center;margin-bottom:1.5rem}
+    .search-box{background:white;padding:1rem;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.08);display:flex;gap:1rem;align-items:center}
+    .search-input{flex:1;padding:0.8rem 1.2rem;border:2px solid #e2e8f0;border-radius:10px;font-size:1rem}
+    .search-btn{background:#667eea;color:white;padding:0.8rem 2rem;border-radius:10px;font-weight:600;border:none;cursor:pointer}
+    
+    /* Categories Grid */
+    .categories-section{padding:0 2rem;margin-bottom:3rem}
+    .section-header{font-size:2rem;font-weight:700;color:#2d3748;margin-bottom:2rem;text-align:center}
+    .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto}
+    .category-card{background:white;padding:2rem 1.5rem;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:all 0.3s ease;cursor:pointer;text-align:center;border:2px solid transparent}
+    .category-card:hover{transform:translateY(-5px);box-shadow:0 8px 25px rgba(102,126,234,0.15);border-color:#667eea}
+    .category-icon{font-size:3rem;margin-bottom:1rem;display:inline-block}
+    .category-name{font-size:1.2rem;font-weight:700;color:#2d3748;margin-bottom:0.5rem}
+    .category-count{color:#718096;font-size:0.9rem;font-weight:500}
+    
+    /* How It Works */
+    .how-section{background:linear-gradient(135deg,#f7fafc 0%,#edf2f7 100%);padding:3rem 2rem;margin:3rem 0;border-radius:30px}
+    .steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;max-width:1100px;margin:2rem auto 0 auto}
+    .step-card{background:white;padding:2rem;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+    .step-number{width:60px;height:60px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;margin:0 auto 1rem auto}
+    .step-title{font-size:1.2rem;font-weight:700;color:#2d3748;margin-bottom:0.8rem}
+    .step-desc{color:#718096;font-size:0.95rem;line-height:1.6}
+    
+    /* Features */
+    .features-section{padding:0 2rem;margin-bottom:3rem}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:1200px;margin:2rem auto 0 auto}
+    .feature-card{background:linear-gradient(135deg,#ffffff,#f8f9ff);padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.06);border-left:4px solid #667eea}
+    .feature-icon{font-size:2.5rem;margin-bottom:1rem}
+    .feature-title{font-size:1.1rem;font-weight:700;color:#2d3748;margin-bottom:0.5rem}
+    .feature-desc{color:#718096;font-size:0.9rem;line-height:1.5}
+    
+    /* CTA Section */
+    .cta-section{background:linear-gradient(135deg,#48bb78 0%,#38a169 100%);padding:3rem 2rem;border-radius:25px;margin:3rem 2rem;text-align:center;color:white;box-shadow:0 8px 30px rgba(72,187,120,0.3)}
+    .cta-title{font-size:2.2rem;font-weight:800;margin-bottom:1rem}
+    .cta-subtitle{font-size:1.2rem;margin-bottom:2rem;opacity:0.95}
+    .cta-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .cta-btn{background:white;color:#38a169;padding:1rem 2.5rem;border-radius:50px;font-weight:700;font-size:1.1rem;box-shadow:0 4px 15px rgba(0,0,0,0.2);transition:all 0.3s ease}
+    .cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.25)}
+    
+    /* Footer */
+    .footer{text-align:center;padding:2rem;color:#718096;font-size:0.95rem;margin-top:3rem}
+    .footer-links{display:flex;gap:2rem;justify-content:center;margin-bottom:1rem;flex-wrap:wrap}
+    .footer-link{color:#667eea;font-weight:600}
     </style>""", unsafe_allow_html=True)
     
-    # Hero Section - Marketplace Focused
+    # Hero Section
     st.markdown("""<div class="hero-section">
-        <div class="hero-title">🛍️ Welcome to <span class="highlight">LinkUp</span></div>
-        <div class="hero-subtitle">Where Student Skills Meet Real Opportunities</div>
-        <div class="marketplace-tagline">The easiest way to find & hire talented students around you — from designers to tutors to entrepreneurs</div>
-        <div class="marketplace-tagline">Head over to the navigation panel by the top left of the page to signup</div>
+        <div class="hero-content">
+            <div class="hero-title">🛍️ LinkUp Marketplace</div>
+            <div class="hero-subtitle">Discover Local Student Businesses & Services</div>
+            <div style="color:#f0f4ff;font-size:1.1rem;margin-bottom:1.5rem;">
+                Post ads with photos & videos of your products • Browse services with real visuals • Connect directly with sellers<br>
+                Your one-stop marketplace for everything student services
+            </div>
+            <div style="background:rgba(255,255,255,0.2);padding:1rem;border-radius:15px;backdrop-filter:blur(10px);display:inline-block;margin-top:1rem;">
+                <strong>📌 New here?</strong> Head to the navigation panel at the top left to signup and start exploring!
+            </div>
+        </div>
+    </div>""", unsafe_allow_html=True)
+    
+    # Stats Bar
+    st.markdown("""<div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Active Listings</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">1,000+</div>
+            <div class="stat-label">Students Connected</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Service Categories</div>
+        </div>
     </div>""", unsafe_allow_html=True)
     
     # Logo
     try:
         st.image("linkup_logo.png", use_container_width=True)
     except:
-        st.info("🖼️ Upload your LinkUp logo as 'linkup_logo.png' to display it here!")
+        pass
     
-    # Popular Service Categories
-    st.markdown('<h2 style="text-align:center;color:#2d3748;margin:3rem 0 2rem 0;font-size:2.2rem;">🎯 Popular Services</h2>', unsafe_allow_html=True)
-
+    # Browse Categories
+    st.markdown('<div class="categories-section"><h2 class="section-header">🎯 Browse by Category</h2>', unsafe_allow_html=True)
+    
     categories = [
-        ("🎨", "Design & Creative", "Logos, Posters, UI/UX, Graphics, Photography, Video Editing"),
-        ("👨‍🏫", "Tutoring & Academic", "Math, Science, Languages, Essay Writing, Exam Prep"),
-        ("💻", "Tech & Programming", "Web Development, Mobile Apps, Data Analysis, Tech Support"),
-        ("📝", "Writing & Content", "Articles, Copywriting, Proofreading, Social Media Content"),
-        ("💄", "Beauty & Lifestyle", "Makeup, Hair Styling, Fashion Consulting, Fitness Coaching"),
-        ("🛠️", "Services & Tasks", "Event Planning, Virtual Assistant, Research, Delivery")
+        ("🎨", "Graphics & Design", "150+ ads"),
+        ("💻", "Tech & Programming", "120+ ads"),
+        ("📚", "Tutoring & Academics", "200+ ads"),
+        ("📸", "Photography & Video", "80+ ads"),
+        ("💄", "Beauty & Personal Care", "90+ ads"),
+        ("🏋️", "Fitness & Wellness", "60+ ads"),
+        ("✍️", "Writing & Translation", "110+ ads"),
+        ("🎵", "Music & Entertainment", "70+ ads"),
+        ("🛠️", "Repair & Maintenance", "55+ ads"),
+        ("🎪", "Events & Planning", "85+ ads"),
+        ("🚗", "Delivery & Logistics", "65+ ads"),
+        ("📱", "Digital Marketing", "95+ ads")
     ]
-
-    categories_html = '<div class="service-categories">'
-    for icon, title, desc in categories:
-        categories_html += f'''<div class="category-card" style="background:#f4f6fa;border:1px solid #e2e8f0;box-shadow:0 4px 16px rgba(0,0,0,0.08);">
-            <span class="category-icon pulse-icon">{icon}</span>
-            <h3 style="color:#222;font-size:1.3rem;margin-bottom:0.5rem;font-weight:600">{title}</h3>
-            <p style="color:#444;font-size:0.95rem;line-height:1.5">{desc}</p>
-        </div>'''
-    categories_html += '</div>'
-    st.markdown(categories_html, unsafe_allow_html=True)
-
     
-    # How It Works Section
-    st.markdown('''<div class="how-it-works">
-        <h2>🚀 How LinkUp Works</h2>
-        <div class="steps-container">
+    categories_html = '<div class="categories-grid">'
+    for icon, name, count in categories:
+        categories_html += f'''<div class="category-card">
+            <div class="category-icon">{icon}</div>
+            <div class="category-name">{name}</div>
+            <div class="category-count">{count}</div>
+        </div>'''
+    categories_html += '</div></div>'
+    st.markdown(categories_html, unsafe_allow_html=True)
+    
+    # How It Works
+    st.markdown('''<div class="how-section">
+        <h2 class="section-header">🚀 How LinkUp Works</h2>
+        <div class="steps-grid">
             <div class="step-card">
                 <div class="step-number">1</div>
-                <div class="step-title">Browse or Search</div>
-                <div class="step-desc">Find the perfect service from talented students</div>
+                <div class="step-title">Browse Ads</div>
+                <div class="step-desc">Scroll through photos & videos of real products and services posted by students</div>
             </div>
             <div class="step-card">
                 <div class="step-number">2</div>
-                <div class="step-title">Connect & Chat</div>
-                <div class="step-desc">Message service providers directly</div>
+                <div class="step-title">Check Details</div>
+                <div class="step-desc">View prices, photos, videos, and seller profiles before deciding</div>
             </div>
             <div class="step-card">
                 <div class="step-number">3</div>
-                <div class="step-title">Get It Done</div>
-                <div class="step-desc">Receive quality work from your peers</div>
+                <div class="step-title">Connect</div>
+                <div class="step-desc">Chat directly on the app or reach out via WhatsApp to discuss your needs</div>
             </div>
             <div class="step-card">
                 <div class="step-number">4</div>
-                <div class="step-title">Post Requests</div>
-                <div class="step-desc">Can't find what you need? Post a request!</div>
+                <div class="step-title">Post Your Products</div>
+                <div class="step-desc">Upload photos & videos of what you're selling - show off your work and attract customers!</div>
             </div>
         </div>
     </div>''', unsafe_allow_html=True)
     
-    # Feature Highlight
-    st.markdown('''<div class="feature-highlight">
-        <h2>✨ Why Choose LinkUp?</h2>
-        <p>Built by students, for students - we understand what you need</p>
-        <div class="feature-list">
-            <div class="feature-item">
-                <strong>💰 Student-Friendly Prices</strong><br>
-                Affordable rates from your peers
+    # Features
+    st.markdown('''<div class="features-section">
+        <h2 class="section-header">✨ Why Post on LinkUp?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📢</div>
+                <div class="feature-title">Rich Media Listings</div>
+                <div class="feature-desc">Upload multiple photos & videos to showcase your products and services</div>
             </div>
-            <div class="feature-item">
-                <strong>🏫 Campus Community</strong><br>
-                Connect with students from your area
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Target Audience</div>
+                <div class="feature-desc">Reach students in your area who need exactly what you offer</div>
             </div>
-            <div class="feature-item">
-                <strong>💬 Easy Communication</strong><br>
-                Built-in chat system
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <div class="feature-title">Easy Communication</div>
+                <div class="feature-desc">Built-in chat + WhatsApp integration for seamless conversations</div>
             </div>
-            <div class="feature-item">
-                <strong>🎯 Quality Services</strong><br>
-                Talented students showcasing their skills
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Manage Your Ads</div>
+                <div class="feature-desc">Update prices, add photos, and edit your listings anytime</div>
             </div>
-        </div>
-    </div>''', unsafe_allow_html=True)
-    
-    # Example Services Section
-    st.markdown('''<div style="background:linear-gradient(145deg,#f0fff4,#e6fffa);padding:2rem;border-radius:20px;margin:2rem 0;">
-        <h3 style="text-align:center;color:#2d3748;margin-bottom:1.5rem;font-size:1.8rem;">🌟 Featured Services</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;">
-            <div style="background:white;padding:1.5rem;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.08);">
-                <div style="font-size:1.5rem;margin-bottom:0.5rem;">📸 Photography</div>
-                <div style="color:#718096;font-size:0.9rem;">Professional photos for events, portraits, products</div>
-                <div style="color:#667eea;font-weight:600;margin-top:0.5rem;">Starting from ₦5,000</div>
+            <div class="feature-card">
+                <div class="feature-icon">🏫</div>
+                <div class="feature-title">Local Campus Network</div>
+                <div class="feature-desc">Connect with students from your school and nearby campuses</div>
             </div>
-            <div style="background:white;padding:1.5rem;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.08);">
-                <div style="font-size:1.5rem;margin-bottom:0.5rem;">💻 Web Design</div>
-                <div style="color:#718096;font-size:0.9rem;">Modern websites and landing pages</div>
-                <div style="color:#667eea;font-weight:600;margin-top:0.5rem;">Starting from ₦15,000</div>
-            </div>
-            <div style="background:white;padding:1.5rem;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.08);">
-                <div style="font-size:1.5rem;margin-bottom:0.5rem;">✍️ Essay Writing</div>
-                <div style="color:#718096;font-size:0.9rem;">Academic writing and proofreading</div>
-                <div style="color:#667eea;font-weight:600;margin-top:0.5rem;">Starting from ₦3,000</div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Quick Setup</div>
+                <div class="feature-desc">Create your first listing in under 5 minutes and go live instantly</div>
             </div>
         </div>
     </div>''', unsafe_allow_html=True)
     
-    # Call to Action & Footer
-    st.markdown('''<div style="background:linear-gradient(135deg,#48bb78,#38a169);padding:3rem 2rem;border-radius:20px;text-align:center;margin:2rem 0;color:white;">
-        <div style="font-size:2.2rem;font-weight:700;margin-bottom:1rem;">Ready to Start?</div>
-        <div style="font-size:1.2rem;margin-bottom:2rem;">Join thousands of students already buying and selling services on LinkUp!</div>
-        <div style="font-size:1.1rem;">📱 Use the sidebar to browse services, post your own, or create a request<br>💼 Turn your skills into income • 🛍️ Find exactly what you need</div>
-    </div>
-    <div class="footer">
-        <div style="font-size:1.1rem;margin-bottom:1rem;">🛍️ LinkUp - Where Student Talent Meets Opportunity</div>
-        <div>Empowering student entrepreneurs • Building the campus economy • Your skills, our platform, endless possibilities</div>
+    # Popular Services Preview
+    st.markdown('''<div style="padding:0 2rem;margin-bottom:3rem;">
+        <h2 class="section-header">🔥 Trending Services This Week</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto;">
+            <div style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #667eea;">
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                    <div style="font-size:2.5rem;">📱</div>
+                    <div>
+                        <div style="font-weight:700;font-size:1.1rem;color:#2d3748;">Instagram Management</div>
+                        <div style="color:#718096;font-size:0.9rem;">Social Media Services</div>
+                    </div>
+                </div>
+                <div style="color:#667eea;font-weight:700;font-size:1.2rem;margin-top:1rem;">From ₦8,000/month</div>
+            </div>
+            <div style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #48bb78;">
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                    <div style="font-size:2.5rem;">💇</div>
+                    <div>
+                        <div style="font-weight:700;font-size:1.1rem;color:#2d3748;">Hair Styling Services</div>
+                        <div style="color:#718096;font-size:0.9rem;">Beauty & Personal Care</div>
+                    </div>
+                </div>
+                <div style="color:#48bb78;font-weight:700;font-size:1.2rem;margin-top:1rem;">From ₦5,000</div>
+            </div>
+            <div style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #f59e0b;">
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                    <div style="font-size:2.5rem;">🎓</div>
+                    <div>
+                        <div style="font-weight:700;font-size:1.1rem;color:#2d3748;">Math Tutoring</div>
+                        <div style="color:#718096;font-size:0.9rem;">Academic Support</div>
+                    </div>
+                </div>
+                <div style="color:#f59e0b;font-weight:700;font-size:1.2rem;margin-top:1rem;">From ₦3,000/session</div>
+            </div>
+        </div>
+    </div>''', unsafe_allow_html=True)
+    
+    # CTA Section
+    st.markdown('''<div class="cta-section">
+        <div class="cta-title">Ready to Start?</div>
+        <div class="cta-subtitle">Join hundreds of student entrepreneurs growing their businesses on LinkUp</div>
+        <div style="background:rgba(255,255,255,0.2);padding:1.5rem;border-radius:15px;margin:2rem auto;max-width:600px;backdrop-filter:blur(10px);">
+            <div style="font-size:1.2rem;font-weight:600;margin-bottom:1rem;">🎉 For Sellers</div>
+            <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Post unlimited ads for free</div>
+            <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Reach thousands of potential customers</div>
+            <div style="font-size:1rem;">✅ Grow your business today</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.2);padding:1.5rem;border-radius:15px;margin:2rem auto;max-width:600px;backdrop-filter:blur(10px);">
+            <div style="font-size:1.2rem;font-weight:600;margin-bottom:1rem;">🛍️ For Buyers</div>
+            <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Browse hundreds of verified services</div>
+            <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Compare prices and ratings</div>
+            <div style="font-size:1rem;">✅ Connect instantly with providers</div>
+        </div>
+    </div>''', unsafe_allow_html=True)
+    
+    # Footer
+    st.markdown('''<div class="footer">
+        <div style="font-size:1.3rem;font-weight:700;color:#2d3748;margin-bottom:1rem;">🛍️ LinkUp Marketplace</div>
+        <div style="margin-bottom:1.5rem;">The #1 student marketplace for local services and businesses</div>
+        <div style="color:#a0aec0;font-size:0.85rem;">Built by students, for students • Connecting campus entrepreneurs since 2025</div>
     </div>''', unsafe_allow_html=True)
 
 # upgrading the login to show forgot password
@@ -822,41 +921,18 @@ def show_sign_up_or_update():
     # Header
     is_update = st.session_state.logged_in
     st.markdown(f"""<div class="main-header">
-        <h1>🛍️ {"Update Your Profile" if is_update else "Join LinkUp"}</h1>
-        <p>{"Enhance your profile to get even better opportunities!" if is_update else "Connect with students and offer your amazing services!"}</p>
-    </div>""", unsafe_allow_html=True)
-    
-    # Account Type Selection (New Addition)
-    st.markdown("""<div class="form-section">
-        <h3>🎯 What brings you to LinkUp?</h3>
-        <p>Choose your primary goal (you can always do both!)</p>
-        <div class="account-type-cards">
-            <div class="type-card">
-                <span class="type-icon">💼</span>
-                <div class="type-title">Service Provider</div>
-                <div class="type-desc">I want to offer my skills and services to earn money</div>
-            </div>
-            <div class="type-card">
-                <span class="type-icon">🛍️</span>
-                <div class="type-title">Service Buyer</div>
-                <div class="type-desc">I'm looking to hire talented students for various tasks</div>
-            </div>
-            <div class="type-card selected">
-                <span class="type-icon">🔄</span>
-                <div class="type-title">Both</div>
-                <div class="type-desc">I want to buy and sell services on the marketplace</div>
-            </div>
-        </div>
+        <h1>🛍️ {"Update Your Profile" if is_update else "Join LinkUp Marketplace"}</h1>
+        <p>{"Keep your marketplace profile fresh and up-to-date!" if is_update else "Start posting your business ads and reaching thousands of students!"}</p>
     </div>""", unsafe_allow_html=True)
     
     # User Type Selection
     st.markdown("""
     <div class="section-card">
         <div class="section-header" style="color:#222;">
-            <span class="section-icon">🎭</span>
-            <h3 style="color:#222;">Choose how you plan to use LinkUp Marketplace</h3>
+            <span class="section-icon">🎯</span>
+            <h3 style="color:#222;">How will you use LinkUp?</h3>
         </div>
-        <p style="color:#333;">Choose how you plan to use LinkUp:</p>
+        <p style="color:#555;font-size:1.05rem;margin-bottom:1.5rem;">Choose your primary goal (you can always switch later!):</p>
         <div class="user-type-cards">
     """, unsafe_allow_html=True)
     
@@ -868,30 +944,42 @@ def show_sign_up_or_update():
         st.session_state.user_type = "Seller"
     
     with col1:
-        if st.button("🛍️ Seller", key="seller_btn", help="I want to offer services and make money"):
+        if st.button("📢 Post Ads", key="seller_btn", help="I want to post business ads and get customers"):
             st.session_state.user_type = "Seller"
     
     with col2:
-        if st.button("🛒 Buyer", key="buyer_btn", help="I want to find and hire services"):
+        if st.button("🔍 Browse & Buy", key="buyer_btn", help="I want to browse ads and hire services"):
             st.session_state.user_type = "Buyer"
     
     with col3:
-        if st.button("🔄 Both", key="both_btn", help="I want to buy and sell services"):
+        if st.button("🔄 Both", key="both_btn", help="I want to post my ads AND browse others"):
             st.session_state.user_type = "Both"
     
     st.markdown("</div>", unsafe_allow_html=True)
     
     # Show selected user type info
     user_type_info = {
-        "Seller": {"icon": "🛍️", "title": "Service Provider", "desc": "You can post your services, set your prices, and connect with buyers who need your skills."},
-        "Buyer": {"icon": "🛒", "title": "Service Buyer", "desc": "You can browse services, post requests for what you need, and hire talented students."},
-        "Both": {"icon": "🔄", "title": "Marketplace Member", "desc": "You can both offer your services to others and hire services you need from other students."}
+        "Seller": {
+            "icon": "📢", 
+            "title": "Post Your Business Ads", 
+            "desc": "You'll be able to create unlimited listings with photos & videos, showcase your products/services, set your own prices, and connect with customers who need what you offer."
+        },
+        "Buyer": {
+            "icon": "🔍", 
+            "title": "Browse & Hire", 
+            "desc": "You'll be able to search through thousands of ads, view photos & videos of products/services, compare prices, and chat with sellers directly on WhatsApp or in-app."
+        },
+        "Both": {
+            "icon": "🔄", 
+            "title": "Full Marketplace Access", 
+            "desc": "You'll be able to post your own business ads with photos & videos AND browse/hire from other students. The best of both worlds - grow your business while finding services you need!"
+        }
     }
 
     selected_info = user_type_info[st.session_state.user_type]
-    st.markdown(f"""<div class="info-box" style="background:linear-gradient(135deg,#232526 0%,#414345 100%);color:#fff;">
-        <h4 style="color:#fff;">{selected_info['icon']} You selected: {selected_info['title']}</h4>
-        <p style="margin:0;color:#f1f1f1;">{selected_info['desc']}</p>
+    st.markdown(f"""<div class="info-box" style="background:linear-gradient(135deg,#48bb78 0%,#38a169 100%);color:#fff;border-left:4px solid #2f855a;">
+        <h4 style="color:#fff;margin-bottom:0.8rem;font-size:1.2rem;">{selected_info['icon']} You selected: {selected_info['title']}</h4>
+        <p style="margin:0;color:#f7fafc;font-size:0.98rem;line-height:1.6;">{selected_info['desc']}</p>
     </div>""", unsafe_allow_html=True)
 
     
@@ -900,53 +988,53 @@ def show_sign_up_or_update():
     <div class="section-card">
         <div class="section-header" style="color:#222;">
             <span class="section-icon">👤</span>
-            <h3 style="color:#222;">Personal Information</h3>
+            <h3 style="color:#222;">Your Profile Information</h3>
         </div>
-        <p style="color:#333;">Let's get to know you better so others can connect with you:</p>
+        <p style="color:#555;font-size:1.05rem;">Let buyers and sellers know who they're dealing with:</p>
     </div>
     """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
         name = st.text_input("Full Name *", st.session_state.current_user.get("Name", ""), 
-                           help="Your full name as it will appear to other users")
+                           help="Your real name - builds trust with other users")
     with col2:
         email = st.text_input("Email Address *", st.session_state.current_user.get("Email", ""),
-                            help="We'll use this for notifications and account recovery")
+                            help="For account security and important marketplace updates")
     
     password = st.text_input("Password *", type="password", 
-                           help="Create a strong password to secure your account")
+                           help="Keep your account secure with a strong password")
     
-    profile_image = st.file_uploader("🖼️ Upload Profile Picture (Optional)", type=["png", "jpg", "jpeg"], 
-                                   help="Add a photo so people can recognize you!")
+    profile_image = st.file_uploader("📸 Upload Profile Photo (Recommended)", type=["png", "jpg", "jpeg"], 
+                                   help="Ads with profile photos get 3x more responses!")
     
     # Bio section
     st.markdown("""
     <div class="section-card">
         <div class="section-header" style="color:#222;">
             <span class="section-icon">✍️</span>
-            <h3 style="color:#222;">Tell us about yourself</h3>
+            <h3 style="color:#222;">About You</h3>
         </div>
-        <p style="color:#333;">Write a short bio to help others understand who you are and what you're about:</p>
+        <p style="color:#555;font-size:1.05rem;">Introduce yourself to the LinkUp community:</p>
     </div>
     """, unsafe_allow_html=True)
     
     if st.session_state.user_type == "Seller":
-        bio_placeholder = "Hi! I'm a talented student who offers amazing graphic design services. I love creating beautiful logos and posters that make businesses stand out..."
-        bio_help = "Describe your skills, experience, and what makes your services special"
+        bio_placeholder = "Hey! I'm a student entrepreneur specializing in graphic design. I create stunning logos, flyers, and social media content. Check out my portfolio in my ads - let's work together! 🎨"
+        bio_help = "Describe what you sell, your experience, and what makes your business special. This shows up on your profile!"
     elif st.session_state.user_type == "Buyer":
-        bio_placeholder = "Hello! I'm always looking for talented students to help with various projects. I believe in supporting student entrepreneurs..."
-        bio_help = "Tell service providers what kind of services you typically need"
+        bio_placeholder = "Hello! I'm always on the lookout for quality student services - from tutoring to design work. I believe in supporting young entrepreneurs and love discovering new talent on LinkUp! 🛍️"
+        bio_help = "Tell sellers what kinds of services you typically look for and what you value in a seller"
     else:
-        bio_placeholder = "Hi! I'm a student who loves both offering my skills and discovering new services from other talented students..."
-        bio_help = "Describe both your skills and what services you might need"
+        bio_placeholder = "Hi! I run a small design business and also hire other talented students for services I need. Love the LinkUp community and excited to connect with fellow student entrepreneurs! 💼🛍️"
+        bio_help = "Describe both what you sell and what you look for when browsing the marketplace"
     
-    bio = st.text_area("Short Bio", st.session_state.current_user.get("Bio", ""), 
-                      help=bio_help, placeholder=bio_placeholder)
+    bio = st.text_area("Short Bio (Optional)", st.session_state.current_user.get("Bio", ""), 
+                      help=bio_help, placeholder=bio_placeholder, max_chars=500)
     
     # Submit button
     st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🚀 " + ("Update Profile" if is_update else "Create My Profile")):
+    if st.button("🚀 " + ("Update My Profile" if is_update else "Create My Account & Start Exploring")):
         if not name or not email or not password:
             st.warning("⚠️ Please fill in all required fields (Name, Email, Password).")
             return
@@ -978,7 +1066,7 @@ def show_sign_up_or_update():
         success = upsert_user(user_data, record_id)
         
         if success:
-            st.success("✅ Profile saved successfully!")
+            st.success("✅ Profile created successfully! Welcome to LinkUp Marketplace! 🎉")
             st.balloons()
             st.session_state.current_user = {**user_data, "id": record_id}
             st.session_state.logged_in = True
@@ -2509,6 +2597,16 @@ def view_talent_profile():
         col_img, col_card = st.columns([2, 1])
         with col_img:
             st.info("No images uploaded for this service.")
+
+    # --- Video Gallery (always show if available) ---
+    video_urls = [u.strip() for u in fields.get("Vids", "").split("\n") if u.strip()]
+    if video_urls:
+        st.markdown("#### 🎥 Service Videos")
+        for url in video_urls:
+            st.video(url)
+    else:
+        st.info("No videos uploaded for this service.")
+
     st.markdown(f"""
     <div style="
         background: white;
@@ -2774,6 +2872,12 @@ def update_profile():
                 type=["png", "jpg", "jpeg"],
                 help="Upload images to showcase your work"
             )
+            new_uploaded_videos = st.file_uploader(
+                "🎥 Upload Short Videos (Max 30 secs)", 
+                accept_multiple_files=True, 
+                type=["mp4", "mov", "avi"],
+                help="Showcase your products/services with a short video!"
+            )
             
             # Image handling options (only show in update mode)
             if is_update_mode:
@@ -2810,6 +2914,22 @@ def update_profile():
                     except Exception as e:
                         st.error(f"❌ Error uploading {file.name}")
                         st.exception(e)
+            # Step 1b: Upload videos
+            new_video_urls = []
+            if new_uploaded_videos:
+                for file in new_uploaded_videos:
+                    try:
+                        file_bytes = file.read()
+                        video_url = upload_image_to_cloudinary(file_bytes, file.name)
+                        if isinstance(video_url, str):
+                            new_video_urls.append(video_url)
+                            st.success(f"✅ Uploaded video: {file.name}")
+                        else:
+                            st.warning(f"❌ Failed to get video URL for {file.name}")
+                    except Exception as e:
+                        st.error(f"❌ Error uploading video {file.name}")
+                        st.exception(e)
+
 
             # Step 2: Handle image logic based on mode and selected option
             if is_update_mode:
@@ -2824,6 +2944,13 @@ def update_profile():
                 # Post mode - use new uploads only
                 combined_urls = new_image_urls
 
+            # Step 2b: Handle video logic
+            if is_update_mode:
+                old_vids = fields.get("Vids", "").split("\n") if fields.get("Vids") else []
+                combined_vids = old_vids + new_video_urls
+            else:
+                combined_vids = new_video_urls
+
             # Step 3: Build data payload
             profile_data = {
                 "fields": {
@@ -2833,7 +2960,8 @@ def update_profile():
                     "Price": new_Price,
                     "Contact_pref": new_contact_pref,
                     "Contact": new_contact,
-                    "Works": "\n".join(combined_urls) if combined_urls else None
+                    "Works": "\n".join(combined_urls) if combined_urls else None,
+                    "Vids": "\n".join(combined_vids) if combined_vids else None
                 }
             }
 
