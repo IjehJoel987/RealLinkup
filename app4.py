@@ -2749,11 +2749,20 @@ def view_talent_profile():
     wa_link = f"https://wa.me/?text={urllib.parse.quote(wa_text)}"
     st.markdown(f'<a href="{wa_link}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:0.7rem 1.2rem;border-radius:8px;font-size:1.08rem;font-weight:600;text-decoration:none;margin-top:0.7rem;">📤 Share on WhatsApp</a>', unsafe_allow_html=True)
 
-    # Telegram share button
-    tg_text = f"Find me on LinkUp! Go to 🔎 Explore Services and search for '{name} - {title}' (Price: ₦{price:,})"
-    tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
-    st.markdown(f'<a href="{tg_link}" target="_blank" style="display:inline-block;background:#0088cc;color:white;padding:0.7rem 1.2rem;border-radius:8px;font-size:1.08rem;font-weight:600;text-decoration:none;margin-top:0.7rem;margin-left:0.7rem;">📤 Share on Telegram</a>', unsafe_allow_html=True)
-
+    telegram_username = fields.get("Telegram_Username", "")
+    if telegram_username:
+        tg_link = f"https://t.me/{telegram_username.lstrip('@')}"
+        st.markdown(
+            f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
+            unsafe_allow_html=True
+        )
+    else:
+        tg_text = f"Hi {name}, I'm interested in your service on LinkUp!"
+        tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
+        st.markdown(
+            f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
+            unsafe_allow_html=True
+        )
 
     import base64
     from io import BytesIO
@@ -2975,7 +2984,14 @@ def update_profile():
             new_contact = st.text_input(
                 "📞 Contact Info", 
                 value=fields.get("Contact", ""),
-                placeholder="Your whatsapp or telegram phone number (if using Phone/Email)" if not is_update_mode else ""
+                placeholder="Your whatsapp phone number (leave blank if you don't use whatsapp)" if not is_update_mode else ""
+            )
+            # Ask for Telegram username
+            new_telegram_username = st.text_input(
+                "📨 Telegram Username (Optional)", 
+                value=fields.get("Telegram_Username", ""),
+                placeholder="e.g. @yourusername",
+                help="Enter your Telegram username for direct chat (leave blank if you don't use Telegram)"
             )
             new_uploaded_files = st.file_uploader(
                 "📷 Upload Work Samples/Products", 
