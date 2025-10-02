@@ -2643,6 +2643,13 @@ def view_talent_profile():
                 f'<a href="{wa_link}" target="_blank" style="display:block;text-align:center;background:#25d366;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on WhatsApp</a>',
                 unsafe_allow_html=True
             )
+            # --- Add Telegram Chat Button ---
+            tg_text = f"Hi {name}, I'm interested in your service on LinkUp!"
+            tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
+            st.markdown(
+                f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
+                unsafe_allow_html=True
+            )
         else:
             st.info("No WhatsApp contact provided.")
 
@@ -2714,8 +2721,112 @@ def view_talent_profile():
         </div>
         """, unsafe_allow_html=True)
 
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("### 📢 Share Your LinkUp Profile")
 
+    share_message = f"""
+    <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:1.5rem;border-radius:14px;margin:1.2rem 0;text-align:center;box-shadow:0 4px 18px rgba(102,126,234,0.13);">
+        <div style="font-size:1.3rem;font-weight:700;margin-bottom:0.7rem;">🔗 Find Me on LinkUp!</div>
+        <div style="font-size:1.1rem;margin-bottom:0.5rem;">
+            <b>{name} - {title}</b><br>
+            <span style="color:#ffeaa7;">Price: ₦{price:,}</span>
+        </div>
+        <div style="margin-bottom:0.7rem;">
+            <span style="background:#e1f7e7;color:#27ae60;padding:0.3rem 0.8rem;border-radius:12px;font-size:0.95rem;font-weight:600;">Contact: {whatsapp_number if whatsapp_number else "In-App Chat"}</span>
+        </div>
+        <div style="font-size:1rem;margin-bottom:0.7rem;">
+            <b>How to find me:</b> Go to <span style="color:#ffeaa7;">🔎 Explore Services</span> and search for <b>{name} - {title}</b>
+        </div>
+        <div style="font-size:0.95rem;opacity:0.8;">
+            <i>Download your profile image,Share this card on WhatsApp, Instagram, or anywhere!</i>
+        </div>
+    </div>
+    """
+    st.markdown(share_message, unsafe_allow_html=True)
+
+    # WhatsApp share button
+    wa_text = f"Find me on LinkUp(linkupmarket.streamlit.app)! Go to 🔎 Explore Services and search for '{name} - {title}' (Price: ₦{price:,})"
+    wa_link = f"https://wa.me/?text={urllib.parse.quote(wa_text)}"
+    st.markdown(f'<a href="{wa_link}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:0.7rem 1.2rem;border-radius:8px;font-size:1.08rem;font-weight:600;text-decoration:none;margin-top:0.7rem;">📤 Share on WhatsApp</a>', unsafe_allow_html=True)
+
+    # Telegram share button
+    tg_text = f"Find me on LinkUp! Go to 🔎 Explore Services and search for '{name} - {title}' (Price: ₦{price:,})"
+    tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
+    st.markdown(f'<a href="{tg_link}" target="_blank" style="display:inline-block;background:#0088cc;color:white;padding:0.7rem 1.2rem;border-radius:8px;font-size:1.08rem;font-weight:600;text-decoration:none;margin-top:0.7rem;margin-left:0.7rem;">📤 Share on Telegram</a>', unsafe_allow_html=True)
+
+
+    import base64
+    from io import BytesIO
+    from PIL import Image
+    import requests
+
+    # Get images for card
+    profile_img_url = profile_image_url
+    service_img_url = image_urls[0] if image_urls else ""
+    rating = calculate_average_rating(fields)
+    stars = "⭐" * min(5, int(round(rating))) if rating > 0 else "☆☆☆☆☆"
+
+    # Download images for PIL (if available)
+    def get_image_bytes(url):
+        try:
+            response = requests.get(url)
+            img = Image.open(BytesIO(response.content)).convert("RGB")
+            return img
+        except:
+            return None
+
+    profile_img = get_image_bytes(profile_img_url) if profile_img_url else None
+    service_img = get_image_bytes(service_img_url) if service_img_url else None
+
+    # Generate a PIL card image (simple, but unique)
+    def generate_card(profile_img, service_img, name, title, price, stars):
+        card = Image.new("RGB", (600, 340), (245, 245, 255))
+        # Paste service image
+        if service_img:
+            service_img = service_img.resize((600, 180))
+            card.paste(service_img, (0, 0))
+        # Paste profile image
+        if profile_img:
+            profile_img = profile_img.resize((80, 80))
+            card.paste(profile_img, (20, 200))
+        # Add text
+        from PIL import ImageDraw, ImageFont
+        draw = ImageDraw.Draw(card)
+        font = ImageFont.load_default()
+        draw.text((120, 210), f"{name}", (40, 40, 80), font=font)
+        draw.text((120, 235), f"{title}", (60, 60, 100), font=font)
+        draw.text((120, 260), f"Price: ₦{price:,}", (27, 174, 96), font=font)
+        draw.text((120, 285), f"Rating: {stars}", (255, 215, 0), font=font)
+        draw.text((20, 320), "Find me on LinkUp!", (102, 126, 234), font=font)
+        return card
+
+    card_img = generate_card(profile_img, service_img, name, title, price, stars)
+    # Convert to bytes for download
+    buffer = BytesIO()
+    card_img.save(buffer, format="PNG")
+    img_bytes = buffer.getvalue()
+    b64 = base64.b64encode(img_bytes).decode()
+
+    st.markdown("### 🖼️ Share Your LinkUp Card")
+    st.image(card_img, caption="Your Shareable LinkUp Card", use_container_width=True)
+    st.download_button(
+        label="⬇️ Download Card Image",
+        data=img_bytes,
+        file_name=f"{name}_{title}_linkup_card.png",
+        mime="image/png"
+    )
+
+    st.markdown("""
+    <div style="margin-top:1.2rem; background:#f8f9fa; border-radius:10px; padding:1rem 1.2rem; border-left:4px solid #667eea; color:#444;">
+        <b>Pro Tip:</b> After clicking WhatsApp or Telegram share, <b>attach your LinkUp card image</b> for a more attractive post!<br>
+        <i>Download your card above, then upload it in your chat or group.</i>
+    </div>
+    """, unsafe_allow_html=True)
     st.session_state.page = None
+
+
+
+
 
 # Helper Functions
 def calculate_average_rating(fields):
@@ -2862,9 +2973,9 @@ def update_profile():
                 index=0 if fields.get("Contact_pref") == "In-App Chat" or not fields.get("Contact_pref") else 1
             )
             new_contact = st.text_input(
-                "📧 Contact Info", 
+                "📞 Contact Info", 
                 value=fields.get("Contact", ""),
-                placeholder="Your email or phone (if using Phone/Email)" if not is_update_mode else ""
+                placeholder="Your whatsapp or telegram phone number (if using Phone/Email)" if not is_update_mode else ""
             )
             new_uploaded_files = st.file_uploader(
                 "📷 Upload Work Samples/Products", 
