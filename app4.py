@@ -183,9 +183,7 @@ def fetch_messages(user_name, contact_name):
         return response.json().get("records", [])
 
     except Exception as e:
-        st.error("❌ Failed to fetch messages.")
-        st.exception(e)  # Display detailed error
-        st.code(response.text if 'response' in locals() else 'No response body')
+        st.error("😕 Unable to load messages. Please check your internet connection and try again.")
         return []
 
 def send_message(sender_name, recipient_name, message):
@@ -208,9 +206,7 @@ def send_message(sender_name, recipient_name, message):
         response.raise_for_status()  # Raise error if status is not 2xx
         return True
     except requests.exceptions.RequestException as e:
-        st.error("❌ Failed to send message.")
-        st.exception(e)  # Show full error details
-        st.code(response.text if 'response' in locals() else 'No response body')
+        st.error("😔 Message couldn't be sent. Please check your connection and try again.")
         return False
 
 def fetch_received_messages(current_user_name):
@@ -232,8 +228,7 @@ def fetch_received_messages(current_user_name):
         return response.json().get("records", [])
 
     except Exception as e:
-        st.error("❌ Failed to fetch received messages.")
-        st.exception(e)
+        st.error("😕 Unable to load your messages. Please check your connection and try again.")
         return []
 
 # forgot password-chidi idea
@@ -255,10 +250,17 @@ def send_password_email(to_email, password):
 # ------------------ Pages ------------------
 # ------------------ LinkUp Homepage ------------------
 def show_home():
-    # Modern Marketplace CSS
+    # Clean, modern CSS
     st.markdown("""<style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    .main-container{font-family:'Inter',sans-serif;background:#f8f9fa;min-height:100vh}
+    
+    /* Main Styles */
+    .main-container {
+        font-family: 'Inter', sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
     
     /* Hero Section */
     .hero-section{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:3.5rem 2rem;border-radius:0 0 30px 30px;margin-bottom:3rem;position:relative;overflow:hidden}
@@ -267,6 +269,64 @@ def show_home():
     .hero-title{font-size:3rem;font-weight:800;color:#ffffff;margin-bottom:1rem;text-shadow:2px 4px 8px rgba(0,0,0,0.2)}
     .hero-subtitle{font-size:1.3rem;color:#f0f4ff;margin-bottom:1.5rem;font-weight:500}
     .hero-cta{background:rgba(255,255,255,0.95);color:#667eea;padding:0.8rem 2rem;border-radius:50px;font-weight:700;font-size:1.1rem;display:inline-block;margin-top:1rem;box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+    
+    /* Eye-Catching Navigation Alert */
+    .nav-alert-box {
+        background: #ff3333;
+        background: linear-gradient(135deg, #ff3333 0%, #ff6666 100%);
+        padding: 1.8rem 2.5rem;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        display: inline-block;
+        margin-top: 2rem;
+        border: 4px solid white;
+        box-shadow: 0 10px 40px rgba(255,51,51,0.5);
+        animation: pulse-attention 2s ease-in-out infinite;
+        position: relative;
+    }
+    
+    @keyframes pulse-attention {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 40px rgba(255,51,51,0.5);
+        }
+        50% {
+            transform: scale(1.03);
+            box-shadow: 0 15px 50px rgba(255,51,51,0.7);
+        }
+    }
+    
+    .nav-alert-emoji {
+        font-size: 2.5rem;
+        display: inline-block;
+        animation: wave 1s ease-in-out infinite;
+    }
+    
+    @keyframes wave {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-15deg); }
+        75% { transform: rotate(15deg); }
+    }
+    
+    .nav-alert-text {
+        color: white;
+        font-size: 1.4rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.8;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .nav-alert-text strong {
+        font-size: 1.6rem;
+        background: white;
+        color: #ff3333;
+        padding: 0.2rem 0.8rem;
+        border-radius: 8px;
+        display: inline-block;
+        margin: 0 0.3rem;
+    }
     
     /* Stats Bar */
     .stats-bar{background:white;padding:1.5rem;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,0.08);margin:-2rem 2rem 3rem 2rem;position:relative;z-index:3;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;text-align:center}
@@ -321,6 +381,13 @@ def show_home():
     .footer-link{color:#667eea;font-weight:600}
     </style>""", unsafe_allow_html=True)
     
+
+    # Covenant University Welcome Banner
+    st.markdown("""<div style="background:linear-gradient(135deg,#5B2C91 0%,#7B3FAF 100%);padding:1.2rem 2rem;text-align:center;margin-bottom:2rem;border-radius:15px;box-shadow:0 4px 20px rgba(91,44,145,0.3);border:3px solid #8B5FC7;">
+        <div style="font-size:1.8rem;font-weight:800;color:#ffffff;margin-bottom:0.3rem;text-shadow:2px 2px 4px rgba(0,0,0,0.2);">🎓 Welcome to Covenant University!</div>
+        <div style="font-size:1.1rem;color:#E9D8FF;font-weight:600;">Exclusively for 100 Level • Your Campus Marketplace Starts Here</div>
+    </div>""", unsafe_allow_html=True)
+
     # Hero Section
     st.markdown("""<div class="hero-section">
         <div class="hero-content">
@@ -330,27 +397,16 @@ def show_home():
                 Post ads with photos & videos of your products • Browse services with real visuals • Connect directly with sellers<br>
                 Your one-stop marketplace for everything student services
             </div>
-            <div style="background:rgba(255,255,255,0.2);padding:1rem;border-radius:15px;backdrop-filter:blur(10px);display:inline-block;margin-top:1rem;">
-                <strong>📌 New here?</strong> Head to the navigation panel at the top left to signup and start exploring!
+            <div class="nav-alert-box">
+                <div class="nav-alert-text">
+                    <span class="nav-alert-emoji">👈</span> <strong>NEW HERE?</strong><br>
+                    Click the<strong>></strong>at the top left<br>
+                    to sign up & start exploring!
+                </div>
             </div>
         </div>
     </div>""", unsafe_allow_html=True)
     
-    # Stats Bar
-    st.markdown("""<div class="stats-bar">
-        <div class="stat-item">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">Active Listings</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">1,000+</div>
-            <div class="stat-label">Students Connected</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">50+</div>
-            <div class="stat-label">Service Categories</div>
-        </div>
-    </div>""", unsafe_allow_html=True)
     
     # Logo
     try:
@@ -358,134 +414,7 @@ def show_home():
     except:
         pass
     
-    # Browse Categories
-    st.markdown('<div class="categories-section"><h2 class="section-header">🎯 Browse by Category</h2>', unsafe_allow_html=True)
-    
-    categories = [
-        ("🎨", "Graphics & Design", "150+ ads"),
-        ("💻", "Tech & Programming", "120+ ads"),
-        ("📚", "Tutoring & Academics", "200+ ads"),
-        ("📸", "Photography & Video", "80+ ads"),
-        ("💄", "Beauty & Personal Care", "90+ ads"),
-        ("🏋️", "Fitness & Wellness", "60+ ads"),
-        ("✍️", "Writing & Translation", "110+ ads"),
-        ("🎵", "Music & Entertainment", "70+ ads"),
-        ("🛠️", "Repair & Maintenance", "55+ ads"),
-        ("🎪", "Events & Planning", "85+ ads"),
-        ("🚗", "Delivery & Logistics", "65+ ads"),
-        ("📱", "Digital Marketing", "95+ ads")
-    ]
-    
-    categories_html = '<div class="categories-grid">'
-    for icon, name, count in categories:
-        categories_html += f'''<div class="category-card">
-            <div class="category-icon">{icon}</div>
-            <div class="category-name">{name}</div>
-            <div class="category-count">{count}</div>
-        </div>'''
-    categories_html += '</div></div>'
-    st.markdown(categories_html, unsafe_allow_html=True)
-    
-    # How It Works
-    st.markdown('''<div class="how-section">
-        <h2 class="section-header">🚀 How LinkUp Works</h2>
-        <div class="steps-grid">
-            <div class="step-card">
-                <div class="step-number">1</div>
-                <div class="step-title">Browse Ads</div>
-                <div class="step-desc">Scroll through photos & videos of real products and services posted by students</div>
-            </div>
-            <div class="step-card">
-                <div class="step-number">2</div>
-                <div class="step-title">Check Details</div>
-                <div class="step-desc">View prices, photos, videos, and seller profiles before deciding</div>
-            </div>
-            <div class="step-card">
-                <div class="step-number">3</div>
-                <div class="step-title">Connect</div>
-                <div class="step-desc">Chat directly on the app or reach out via WhatsApp to discuss your needs</div>
-            </div>
-            <div class="step-card">
-                <div class="step-number">4</div>
-                <div class="step-title">Post Your Products</div>
-                <div class="step-desc">Upload photos & videos of what you're selling - show off your work and attract customers!</div>
-            </div>
-        </div>
-    </div>''', unsafe_allow_html=True)
-    
-    # Features
-    st.markdown('''<div class="features-section">
-        <h2 class="section-header">✨ Why Post on LinkUp?</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">📢</div>
-                <div class="feature-title">Rich Media Listings</div>
-                <div class="feature-desc">Upload multiple photos & videos to showcase your products and services</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <div class="feature-title">Target Audience</div>
-                <div class="feature-desc">Reach students in your area who need exactly what you offer</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💬</div>
-                <div class="feature-title">Easy Communication</div>
-                <div class="feature-desc">Built-in chat + WhatsApp integration for seamless conversations</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <div class="feature-title">Manage Your Ads</div>
-                <div class="feature-desc">Update prices, add photos, and edit your listings anytime</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🏫</div>
-                <div class="feature-title">Local Campus Network</div>
-                <div class="feature-desc">Connect with students from your school and nearby campuses</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-title">Quick Setup</div>
-                <div class="feature-desc">Create your first listing in under 5 minutes and go live instantly</div>
-            </div>
-        </div>
-    </div>''', unsafe_allow_html=True)
-    
-    # Popular Services Preview
-    st.markdown('''<div style="padding:0 2rem;margin-bottom:3rem;">
-        <h2 class="section-header">🔥 Trending Services This Week</h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto;">
-            <div style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #667eea;">
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-                    <div style="font-size:2.5rem;">📱</div>
-                    <div>
-                        <div style="font-weight:700;font-size:1.1rem;color:#2d3748;">Instagram Management</div>
-                        <div style="color:#718096;font-size:0.9rem;">Social Media Services</div>
-                    </div>
-                </div>
-                <div style="color:#667eea;font-weight:700;font-size:1.2rem;margin-top:1rem;">From ₦8,000/month</div>
-            </div>
-            <div style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #48bb78;">
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-                    <div style="font-size:2.5rem;">💇</div>
-                    <div>
-                        <div style="font-weight:700;font-size:1.1rem;color:#2d3748;">Hair Styling Services</div>
-                        <div style="color:#718096;font-size:0.9rem;">Beauty & Personal Care</div>
-                    </div>
-                </div>
-                <div style="color:#48bb78;font-weight:700;font-size:1.2rem;margin-top:1rem;">From ₦5,000</div>
-            </div>
-            <div style="background:white;padding:2rem;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);border-top:4px solid #f59e0b;">
-                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-                    <div style="font-size:2.5rem;">🎓</div>
-                    <div>
-                        <div style="font-weight:700;font-size:1.1rem;color:#2d3748;">Math Tutoring</div>
-                        <div style="color:#718096;font-size:0.9rem;">Academic Support</div>
-                    </div>
-                </div>
-                <div style="color:#f59e0b;font-weight:700;font-size:1.2rem;margin-top:1rem;">From ₦3,000/session</div>
-            </div>
-        </div>
-    </div>''', unsafe_allow_html=True)
+
     
     # CTA Section
     st.markdown('''<div class="cta-section">
@@ -1046,8 +975,7 @@ def show_sign_up_or_update():
                 profile_image_url = upload_image_to_cloudinary(file_bytes, profile_image.name)
                 st.success("✅ Profile picture uploaded!")
             except Exception as e:
-                st.error("❌ Failed to upload profile picture.")
-                st.exception(e)
+                st.error("😕 Could not upload your profile picture. Please try a different image or try again later.")
         
         # Prepare user data with simplified structure
         user_data = {
@@ -1072,7 +1000,7 @@ def show_sign_up_or_update():
             st.session_state.logged_in = True
             st.rerun()
         else:
-            st.error("❌ Failed to save your profile. Please try again.")
+            st.error("😔 We couldn't save your profile changes. Please check your connection and try again.")
 
 
 # handle chat interface
@@ -1204,7 +1132,7 @@ def show_chats():
                 else:
                     st.info("You haven't chatted with anyone yet.")
             else:
-                st.error("Failed to fetch chat history.")
+                st.error("😕 Unable to load chat history. Please check your connection and refresh the page.")
 
             # Enhanced contact selection
     st.markdown("### 👥 Start a Conversation")
@@ -2209,35 +2137,6 @@ def Talent_Zone():
                 st.session_state.selected_chat_user = None
                 st.rerun()
 
-    # Header Section
-    st.markdown("""
-    <div class="talent-header">
-        <h1>🎯 LinkUp Marketplace</h1>
-        <p>Discover, Hire, and Collaborate with the Best Talents Around You</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Safety Disclaimer Banner - Always visible after acceptance
-    st.markdown("""
-    <div class="disclaimer-banner">
-        <h3>🛡️ Stay Safe & Smart</h3>
-        <p><strong>Remember:</strong> Pay after service delivery • Verify before you trust • We're not liable for scams • Report suspicious activities</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Verification promotion banner
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, #ffeaa7, #fab1a0); border: 3px solid #e17055; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; text-align: center; animation: subtle-pulse 2s infinite;">
-        <h3 style="margin: 0 0 0.5rem 0; color: #2d3436;">🔒 Still Unverified? You're Missing Out!</h3>
-        <p style="margin: 0; color: #636e72; font-weight: 600;">Verified professionals get 3x more clients. Join the elite circle! ✨</p>
-    </div>
-    <style>
-    @keyframes subtle-pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-    </style>
-    """, unsafe_allow_html=True)
 
     # Display Existing Services
     st.markdown('<div class="section-header">🔍 Explore Available Services</div>', unsafe_allow_html=True)
@@ -2481,9 +2380,9 @@ def Talent_Zone():
                                                     st.session_state[review_key] = False
                                                     st.rerun()
                                                 else:
-                                                    st.error("❌ Failed to submit review.")
+                                                    st.error("😔 Unable to submit your review. Please try again in a moment.")
                                             else:
-                                                st.error("Please fill in all fields.")
+                                                st.error("🤔 Please fill in your rating and review before submitting.")
                                     with col2:
                                         if st.form_submit_button("Cancel", use_container_width=True):
                                             st.session_state[review_key] = False
@@ -2509,23 +2408,7 @@ def Talent_Zone():
                         
 
     except requests.exceptions.RequestException as e:
-        st.error("❌ Could not fetch services.")
-        st.exception(e)
-
-    # Add a footer disclaimer section
-
-# Add this before your existing footer disclaimer
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, #74b9ff, #0984e3); color: white; padding: 2rem; border-radius: 15px; margin: 2rem 0; text-align: center; box-shadow: 0 8px 25px rgba(9, 132, 227, 0.3);">
-        <h3 style="margin: 0 0 1rem 0;">🎯 Smart business owners Choose Verified!</h3>
-        <p style="margin: 0 0 1rem 0; font-size: 1.1rem;">Don't be the person who is tagged as a scammer. 87% of fraud happens with unverified users.</p>
-        <p style="margin: 0; font-weight: 600; font-size: 1.2rem;">⚡ Get Verified Today - Only ₦2,950/semester</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    if st.button("🚀 Verify My Account Now", key="verify_cta_bottom", use_container_width=True, type="primary"):
-        st.session_state.page = "verification"
-        st.rerun()
+        st.error("😕 Unable to load services right now. Please check your connection and try again.")
 
     st.markdown("""
     <div style="margin: 3rem 0 2rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #dc3545;">
@@ -2561,7 +2444,7 @@ def view_talent_profile():
     record_id = talent.get("id", "")  # Get the record ID
     requester_name = fields.get("Name", "Unknown")
     if not talent:
-        st.error("⚠️ No talent selected. Please return to the talent zone and select a profile.")
+        st.error("🔍 Please select a service provider from the explore section first.")
         return
     
     fields = talent.get("fields", {})
@@ -2582,17 +2465,38 @@ def view_talent_profile():
         img_idx = st.session_state[profile_key]
         col_img, col_card = st.columns([2, 1])
         with col_img:
-            # Show main image
-            st.image(image_urls[img_idx],  use_container_width =True)
-            # Show thumbnails
-            thumb_cols = st.columns(len(image_urls))
+            # Show main image with reduced height and margin-bottom for spacing
+            st.markdown(
+                f'<img src="{image_urls[img_idx]}" style="width:100%;height:320px;object-fit:cover;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:24px;" />',
+                unsafe_allow_html=True
+            )
+            # Show thumbnails with wrapping
+            st.markdown("""
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-start; margin-bottom: 12px;">
+            """, unsafe_allow_html=True)
+            image_prices = fields.get("Image_Prices", "").split("\n")
             for i, url in enumerate(image_urls):
-                with thumb_cols[i]:
-                    st.markdown(
-                        f'<img src="{url}" style="width:900px;height:300px;object-fit:cover;border-radius:30px;border:2px solid #eee;margin-bottom:4px;" />',
-                        unsafe_allow_html=True
-                    )
+                image_price = image_prices[i].strip() if i < len(image_prices) else ""
+                if image_price and image_price.isdigit():
+                    price_text = f"₦{int(image_price):,}"
+                else:
+                    price_text = f"₦{price:,}" if price > 0 else "Contact for price"
+                st.markdown(
+                    f'''
+                    <div style="flex: 0 1 180px; text-align: center;">
+                        <a href="{url}" target="_blank" title="Click to expand">
+                            <img src="{url}" style="width:180px;height:120px;object-fit:cover;border-radius:16px;border:2px solid #eee;display:block;margin:auto;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+                        </a>
+                        <div style="font-weight:600;color:#e74c3c;text-align:center;">{price_text}</div>
+                    </div>
+                    ''',
+                    unsafe_allow_html=True
+                )
+            st.markdown("</div>", unsafe_allow_html=True)
             st.caption(f"Image {img_idx+1} of {len(image_urls)}")
+
+
+
     else:
         col_img, col_card = st.columns([2, 1])
         with col_img:
@@ -2627,14 +2531,25 @@ def view_talent_profile():
 
     # --- Right Card: Price & WhatsApp ---
     with col_card:
+        image_prices = fields.get("Image_Prices", "").split("\n")
+        valid_prices = [int(p.strip()) for p in image_prices if p.strip().isdigit()]
+        if valid_prices:
+            min_price = min(valid_prices)
+            price_display = f"From ₦{min_price:,}"
+        elif price > 0:
+            price_display = f"₦{price:,}"
+        else:
+            price_display = "Contact for price"
+
         st.markdown(f"""
         <div style="background:white;padding:1.5rem 1.2rem 1.2rem 1.2rem;border-radius:15px;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:1.5rem;">
-            <div style="font-size:2rem;font-weight:700;color:#27ae60;margin-bottom:0.5rem;">₦{price:,}</div>
+            <div style="font-size:2rem;font-weight:700;color:#27ae60;margin-bottom:0.5rem;">{price_display}</div>
             <div style="margin-bottom:1rem;">
                 <span style="background:#e1f7e7;color:#27ae60;padding:0.3rem 0.8rem;border-radius:12px;font-size:0.95rem;font-weight:600;">Negotiable</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
+
 
         # WhatsApp Chat Button
         if whatsapp_number and whatsapp_number != "Not provided":
@@ -2645,7 +2560,15 @@ def view_talent_profile():
             )
             # --- Add Telegram Chat Button ---
             tg_text = f"Hi {name}, I'm interested in your service on LinkUp!"
-            tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
+            telegram_username = fields.get("Telegram_Username", "")
+            if telegram_username:
+                # Remove @ if present and create direct chat link
+                telegram_username = telegram_username.lstrip('@')
+                tg_link = f"https://t.me/{telegram_username}?text={urllib.parse.quote(tg_text)}"
+            else:
+                # Fallback to share URL if no username provided
+                tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
+            
             st.markdown(
                 f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
                 unsafe_allow_html=True
@@ -2682,23 +2605,23 @@ def view_talent_profile():
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div style="
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.3rem 1rem;
-            border-radius: 14px;
-            margin-top: 1.2rem;
-            box-shadow: 0 4px 18px rgba(102,126,234,0.13);
-            text-align: center;
-            font-size: 1.08rem;
-            font-weight: 500;
-        ">
-            <div style="font-size:1.7rem; margin-bottom:0.5rem;">💬</div>
-            To chat in-app, go to the <b>💬 Chats</b> section in the navigation panel<br>
-            and select <span style="color:#ffeaa7;font-weight:600;">{name}</span>.
-        </div>
-        """, unsafe_allow_html=True)
+        # st.markdown(f"""
+        # <div style="
+        #     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        #     color: white;
+        #     padding: 1.3rem 1rem;
+        #     border-radius: 14px;
+        #     margin-top: 1.2rem;
+        #     box-shadow: 0 4px 18px rgba(102,126,234,0.13);
+        #     text-align: center;
+        #     font-size: 1.08rem;
+        #     font-weight: 500;
+        # ">
+        #     <div style="font-size:1.7rem; margin-bottom:0.5rem;">💬</div>
+        #     To chat in-app, go to the <b>💬 Chats</b> section in the navigation panel<br>
+        #     and select <span style="color:#ffeaa7;font-weight:600;">{name}</span>.
+        # </div>
+        # """, unsafe_allow_html=True)
 
         st.markdown("""
         <div style="
@@ -2721,116 +2644,116 @@ def view_talent_profile():
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("### 📢 Share Your LinkUp Profile")
+    # st.markdown("<hr>", unsafe_allow_html=True)
+    # st.markdown("### 📢 Share Your LinkUp Profile")
 
-    share_message = f"""
-    <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:1.5rem;border-radius:14px;margin:1.2rem 0;text-align:center;box-shadow:0 4px 18px rgba(102,126,234,0.13);">
-        <div style="font-size:1.3rem;font-weight:700;margin-bottom:0.7rem;">🔗 Find Me on LinkUp!</div>
-        <div style="font-size:1.1rem;margin-bottom:0.5rem;">
-            <b>{name} - {title}</b><br>
-            <span style="color:#ffeaa7;">Price: ₦{price:,}</span>
-        </div>
-        <div style="margin-bottom:0.7rem;">
-            <span style="background:#e1f7e7;color:#27ae60;padding:0.3rem 0.8rem;border-radius:12px;font-size:0.95rem;font-weight:600;">Contact: {whatsapp_number if whatsapp_number else "In-App Chat"}</span>
-        </div>
-        <div style="font-size:1rem;margin-bottom:0.7rem;">
-            <b>How to find me:</b> Go to <span style="color:#ffeaa7;">🔎 Explore Services</span> and search for <b>{name} - {title}</b>
-        </div>
-        <div style="font-size:0.95rem;opacity:0.8;">
-            <i>Download your profile image,Share this card on WhatsApp, Instagram, or anywhere!</i>
-        </div>
-    </div>
-    """
-    st.markdown(share_message, unsafe_allow_html=True)
+    # share_message = f"""
+    # <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:1.5rem;border-radius:14px;margin:1.2rem 0;text-align:center;box-shadow:0 4px 18px rgba(102,126,234,0.13);">
+    #     <div style="font-size:1.3rem;font-weight:700;margin-bottom:0.7rem;">🔗 Find Me on LinkUp!</div>
+    #     <div style="font-size:1.1rem;margin-bottom:0.5rem;">
+    #         <b>{name} - {title}</b><br>
+    #         <span style="color:#ffeaa7;">Price: ₦{price:,}</span>
+    #     </div>
+    #     <div style="margin-bottom:0.7rem;">
+    #         <span style="background:#e1f7e7;color:#27ae60;padding:0.3rem 0.8rem;border-radius:12px;font-size:0.95rem;font-weight:600;">Contact: {whatsapp_number if whatsapp_number else "In-App Chat"}</span>
+    #     </div>
+    #     <div style="font-size:1rem;margin-bottom:0.7rem;">
+    #         <b>How to find me:</b> Go to <span style="color:#ffeaa7;">🔎 Explore Services</span> and search for <b>{name} - {title}</b>
+    #     </div>
+    #     <div style="font-size:0.95rem;opacity:0.8;">
+    #         <i>Download your profile image,Share this card on WhatsApp, Instagram, or anywhere!</i>
+    #     </div>
+    # </div>
+    # """
+    # st.markdown(share_message, unsafe_allow_html=True)
 
-    # WhatsApp share button
-    wa_text = f"Find me on LinkUp(linkupmarket.streamlit.app)! Go to 🔎 Explore Services and search for '{name} - {title}' (Price: ₦{price:,})"
-    wa_link = f"https://wa.me/?text={urllib.parse.quote(wa_text)}"
-    st.markdown(f'<a href="{wa_link}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:0.7rem 1.2rem;border-radius:8px;font-size:1.08rem;font-weight:600;text-decoration:none;margin-top:0.7rem;">📤 Share on WhatsApp</a>', unsafe_allow_html=True)
+    # # WhatsApp share button
+    # wa_text = f"Find me on LinkUp(linkupmarket.streamlit.app)! Go to 🔎 Explore Services and search for '{name} - {title}' (Price: ₦{price:,})"
+    # wa_link = f"https://wa.me/?text={urllib.parse.quote(wa_text)}"
+    # st.markdown(f'<a href="{wa_link}" target="_blank" style="display:inline-block;background:#25d366;color:white;padding:0.7rem 1.2rem;border-radius:8px;font-size:1.08rem;font-weight:600;text-decoration:none;margin-top:0.7rem;">📤 Share on WhatsApp</a>', unsafe_allow_html=True)
 
-    telegram_username = fields.get("Telegram_Username", "")
-    if telegram_username:
-        tg_link = f"https://t.me/{telegram_username.lstrip('@')}"
-        st.markdown(
-            f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
-            unsafe_allow_html=True
-        )
-    else:
-        tg_text = f"Hi {name}, I'm interested in your service on LinkUp!"
-        tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
-        st.markdown(
-            f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
-            unsafe_allow_html=True
-        )
+    # telegram_username = fields.get("Telegram_Username", "")
+    # if telegram_username:
+    #     tg_link = f"https://t.me/{telegram_username.lstrip('@')}"
+    #     st.markdown(
+    #         f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
+    #         unsafe_allow_html=True
+    #     )
+    # else:
+    #     tg_text = f"Hi {name}, I'm interested in your service on LinkUp!"
+    #     tg_link = f"https://t.me/share/url?url=https://linkupmarket.streamlit.app&text={urllib.parse.quote(tg_text)}"
+    #     st.markdown(
+    #         f'<a href="{tg_link}" target="_blank" style="display:block;text-align:center;background:#0088cc;color:white;padding:0.9rem 0;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:0.7rem;text-decoration:none;">💬 Chat on Telegram</a>',
+    #         unsafe_allow_html=True
+    #     )
 
-    import base64
-    from io import BytesIO
-    from PIL import Image
-    import requests
+    # import base64
+    # from io import BytesIO
+    # from PIL import Image
+    # import requests
 
-    # Get images for card
-    profile_img_url = profile_image_url
-    service_img_url = image_urls[0] if image_urls else ""
-    rating = calculate_average_rating(fields)
-    stars = "⭐" * min(5, int(round(rating))) if rating > 0 else "☆☆☆☆☆"
+    # # Get images for card
+    # profile_img_url = profile_image_url
+    # service_img_url = image_urls[0] if image_urls else ""
+    # rating = calculate_average_rating(fields)
+    # stars = "⭐" * min(5, int(round(rating))) if rating > 0 else "☆☆☆☆☆"
 
-    # Download images for PIL (if available)
-    def get_image_bytes(url):
-        try:
-            response = requests.get(url)
-            img = Image.open(BytesIO(response.content)).convert("RGB")
-            return img
-        except:
-            return None
+    # # Download images for PIL (if available)
+    # def get_image_bytes(url):
+    #     try:
+    #         response = requests.get(url)
+    #         img = Image.open(BytesIO(response.content)).convert("RGB")
+    #         return img
+    #     except:
+    #         return None
 
-    profile_img = get_image_bytes(profile_img_url) if profile_img_url else None
-    service_img = get_image_bytes(service_img_url) if service_img_url else None
+    # profile_img = get_image_bytes(profile_img_url) if profile_img_url else None
+    # service_img = get_image_bytes(service_img_url) if service_img_url else None
 
-    # Generate a PIL card image (simple, but unique)
-    def generate_card(profile_img, service_img, name, title, price, stars):
-        card = Image.new("RGB", (600, 340), (245, 245, 255))
-        # Paste service image
-        if service_img:
-            service_img = service_img.resize((600, 180))
-            card.paste(service_img, (0, 0))
-        # Paste profile image
-        if profile_img:
-            profile_img = profile_img.resize((80, 80))
-            card.paste(profile_img, (20, 200))
-        # Add text
-        from PIL import ImageDraw, ImageFont
-        draw = ImageDraw.Draw(card)
-        font = ImageFont.load_default()
-        draw.text((120, 210), f"{name}", (40, 40, 80), font=font)
-        draw.text((120, 235), f"{title}", (60, 60, 100), font=font)
-        draw.text((120, 260), f"Price: ₦{price:,}", (27, 174, 96), font=font)
-        draw.text((120, 285), f"Rating: {stars}", (255, 215, 0), font=font)
-        draw.text((20, 320), "Find me on LinkUp!", (102, 126, 234), font=font)
-        return card
+    # # Generate a PIL card image (simple, but unique)
+    # def generate_card(profile_img, service_img, name, title, price, stars):
+    #     card = Image.new("RGB", (600, 340), (245, 245, 255))
+    #     # Paste service image
+    #     if service_img:
+    #         service_img = service_img.resize((600, 180))
+    #         card.paste(service_img, (0, 0))
+    #     # Paste profile image
+    #     if profile_img:
+    #         profile_img = profile_img.resize((80, 80))
+    #         card.paste(profile_img, (20, 200))
+    #     # Add text
+    #     from PIL import ImageDraw, ImageFont
+    #     draw = ImageDraw.Draw(card)
+    #     font = ImageFont.load_default()
+    #     draw.text((120, 210), f"{name}", (40, 40, 80), font=font)
+    #     draw.text((120, 235), f"{title}", (60, 60, 100), font=font)
+    #     draw.text((120, 260), f"Price: ₦{price:,}", (27, 174, 96), font=font)
+    #     draw.text((120, 285), f"Rating: {stars}", (255, 215, 0), font=font)
+    #     draw.text((20, 320), "Find me on LinkUp!", (102, 126, 234), font=font)
+    #     return card
 
-    card_img = generate_card(profile_img, service_img, name, title, price, stars)
-    # Convert to bytes for download
-    buffer = BytesIO()
-    card_img.save(buffer, format="PNG")
-    img_bytes = buffer.getvalue()
-    b64 = base64.b64encode(img_bytes).decode()
+    # card_img = generate_card(profile_img, service_img, name, title, price, stars)
+    # # Convert to bytes for download
+    # buffer = BytesIO()
+    # card_img.save(buffer, format="PNG")
+    # img_bytes = buffer.getvalue()
+    # b64 = base64.b64encode(img_bytes).decode()
 
-    st.markdown("### 🖼️ Share Your LinkUp Card")
-    st.image(card_img, caption="Your Shareable LinkUp Card", use_container_width=True)
-    st.download_button(
-        label="⬇️ Download Card Image",
-        data=img_bytes,
-        file_name=f"{name}_{title}_linkup_card.png",
-        mime="image/png"
-    )
+    # st.markdown("### 🖼️ Share Your LinkUp Card")
+    # st.image(card_img, caption="Your Shareable LinkUp Card", use_container_width=True)
+    # st.download_button(
+    #     label="⬇️ Download Card Image",
+    #     data=img_bytes,
+    #     file_name=f"{name}_{title}_linkup_card.png",
+    #     mime="image/png"
+    # )
 
-    st.markdown("""
-    <div style="margin-top:1.2rem; background:#f8f9fa; border-radius:10px; padding:1rem 1.2rem; border-left:4px solid #667eea; color:#444;">
-        <b>Pro Tip:</b> After clicking WhatsApp or Telegram share, <b>attach your LinkUp card image</b> for a more attractive post!<br>
-        <i>Download your card above, then upload it in your chat or group.</i>
-    </div>
-    """, unsafe_allow_html=True)
+    # st.markdown("""
+    # <div style="margin-top:1.2rem; background:#f8f9fa; border-radius:10px; padding:1rem 1.2rem; border-left:4px solid #667eea; color:#444;">
+    #     <b>Pro Tip:</b> After clicking WhatsApp or Telegram share, <b>attach your LinkUp card image</b> for a more attractive post!<br>
+    #     <i>Download your card above, then upload it in your chat or group.</i>
+    # </div>
+    # """, unsafe_allow_html=True)
     st.session_state.page = None
 
 
@@ -2907,7 +2830,7 @@ def update_profile():
 
     current_user = st.session_state.get("current_user")
     if not current_user:
-        st.error("You gotta be logged in to update your profile.")
+        st.error("🔒 Please log in to update your profile.")
         return
 
     user_name = current_user.get("Name")
@@ -2999,6 +2922,12 @@ def update_profile():
                 type=["png", "jpg", "jpeg"],
                 help="Upload images to showcase your work"
             )
+            image_prices = st.text_area(
+                "💸 Image Prices (one per line, matching each image above)",
+                value=fields.get("Image_Prices", ""),
+                placeholder="e.g.\n5000\n7000\n6000",
+                help="Enter a price for each image above, one per line. Leave blank to use the general price."
+            )
             new_uploaded_videos = st.file_uploader(
                 "🎥 Upload Short Videos (Max 30 secs)", 
                 accept_multiple_files=True, 
@@ -3039,8 +2968,7 @@ def update_profile():
                         else:
                             st.warning(f"❌ Failed to get URL for {file.name}")
                     except Exception as e:
-                        st.error(f"❌ Error uploading {file.name}")
-                        st.exception(e)
+                        st.error(f"😕 Unable to upload {file.name}. Please try a different image or try again later.")
             # Step 1b: Upload videos
             new_video_urls = []
             if new_uploaded_videos:
@@ -3054,8 +2982,7 @@ def update_profile():
                         else:
                             st.warning(f"❌ Failed to get video URL for {file.name}")
                     except Exception as e:
-                        st.error(f"❌ Error uploading video {file.name}")
-                        st.exception(e)
+                        st.error(f"😕 Unable to upload video {file.name}. Please try a different video or try again later.")
 
 
             # Step 2: Handle image logic based on mode and selected option
@@ -3088,7 +3015,9 @@ def update_profile():
                     "Contact_pref": new_contact_pref,
                     "Contact": new_contact,
                     "Works": "\n".join(combined_urls) if combined_urls else None,
-                    "Vids": "\n".join(combined_vids) if combined_vids else None
+                    "Vids": "\n".join(combined_vids) if combined_vids else None,
+                    "Image_Prices": image_prices,
+                    "Telegram_Username": new_telegram_username
                 }
             }
 
@@ -4039,26 +3968,7 @@ else:
     elif user_type == "Business":
         # Business User Navigation with Verification
         st.sidebar.markdown('<div class="nav-section-title">💼 Business Hub</div>', unsafe_allow_html=True)
-        main_options = ["🏠 Home", "✍️ Update Profile", "💬 Chats", "🔎 Explore Services", "📥 Service Requests","⚙️ Post/Update Your Business/Service profile"]
-    
-        # Add verification option based on verification status
-        current_user = st.session_state.get("current_user", {})
-        is_verified = current_user.get("Verified", False)
-    
-        if not is_verified:
-            # Show "Get Verified" option for unverified business users
-            st.sidebar.markdown('<div class="nav-section-title">⭐ Premium</div>', unsafe_allow_html=True)
-            verification_options = ["✅ Get Verified"]
-            main_options.extend(verification_options)
-        else:
-            # Show verified badge for verified users
-            st.sidebar.markdown("""
-            <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
-                        color: white; padding: 0.8rem; border-radius: 8px; 
-                        text-align: center; margin: 0.5rem 0; font-weight: 600; font-size: 0.9rem;">
-                ✅ Verified Business
-            </div>
-            """, unsafe_allow_html=True)
+        main_options = ["🔎 Explore Services","✍️ Update Profile", "💬 Chats","⚙️ Post/Update Your Business/Service profile"]
     
         all_options = main_options + ["🚪 Logout"]
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_business")
@@ -4066,7 +3976,7 @@ else:
     elif user_type == "Student":
         # Student User Navigation with Dashboard
         st.sidebar.markdown('<div class="nav-section-title">🎯 Main Hub</div>', unsafe_allow_html=True)
-        main_options = ["🏠 Home","✍️ Update Profile", "💬 Chats", "🔎 Explore Services", "📥 Service Requests","⚙️ Post/Update Your Business/Service profile"]
+        main_options = ["🔎 Explore Services","✍️ Update Profile","⚙️ Post/Update Your Business/Service profile"]
         
         all_options = main_options + ["🚪 Logout"]
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_student")
@@ -4074,27 +3984,7 @@ else:
     else:  # user_type == "Both"
         # Both User Navigation with Verification
         st.sidebar.markdown('<div class="nav-section-title">🎯 Main Hub</div>', unsafe_allow_html=True)
-        main_options = ["🏠 Home","✍️ Update Profile","💬 Chats", "🔎 Explore Services", "📥 Service Requests","⚙️ Post/Update Your Business/Service profile"]
-    
-
-    
-        # Add verification option for "Both" users
-        current_user = st.session_state.get("current_user", {})
-        is_verified = current_user.get("Verified", False)
-    
-        if not is_verified:
-            st.sidebar.markdown('<div class="nav-section-title">⭐ Premium</div>', unsafe_allow_html=True)
-            verification_options = ["✅ Get Verified"]
-            main_options.extend(verification_options)
-        else:
-            # Show verified badge
-            st.sidebar.markdown("""
-            <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
-                        color: white; padding: 0.8rem; border-radius: 8px; 
-                        text-align: center; margin: 0.5rem 0; font-weight: 600; font-size: 0.9rem;">
-                ✅ Verified Business
-            </div>
-            """, unsafe_allow_html=True)
+        main_options = [ "🔎 Explore Services","✍️ Update Profile","⚙️ Post/Update Your Business/Service profile"]
   
         all_options = main_options + ["🚪 Logout"]
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_both")
