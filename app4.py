@@ -278,7 +278,7 @@ def show_home():
         border-radius: 20px;
         backdrop-filter: blur(10px);
         display: inline-block;
-        margin-top: 2rem;
+        margin: 2rem auto;
         border: 4px solid white;
         box-shadow: 0 10px 40px rgba(255,51,51,0.5);
         animation: pulse-attention 2s ease-in-out infinite;
@@ -326,6 +326,11 @@ def show_home():
         border-radius: 8px;
         display: inline-block;
         margin: 0 0.3rem;
+    }
+    
+    .nav-alert-container {
+        text-align: center;
+        margin: 2rem 0;
     }
     
     /* Stats Bar */
@@ -381,14 +386,7 @@ def show_home():
     .footer-link{color:#667eea;font-weight:600}
     </style>""", unsafe_allow_html=True)
     
-
-    # Covenant University Welcome Banner
-    st.markdown("""<div style="background:linear-gradient(135deg,#5B2C91 0%,#7B3FAF 100%);padding:1.2rem 2rem;text-align:center;margin-bottom:2rem;border-radius:15px;box-shadow:0 4px 20px rgba(91,44,145,0.3);border:3px solid #8B5FC7;">
-        <div style="font-size:1.8rem;font-weight:800;color:#ffffff;margin-bottom:0.3rem;text-shadow:2px 2px 4px rgba(0,0,0,0.2);">🎓 Welcome to Covenant University!</div>
-        <div style="font-size:1.1rem;color:#E9D8FF;font-weight:600;">Exclusively for 100 Level • Your Campus Marketplace Starts Here</div>
-    </div>""", unsafe_allow_html=True)
-
-    # Hero Section
+    # Hero Section (without nav alert)
     st.markdown("""<div class="hero-section">
         <div class="hero-content">
             <div class="hero-title">🛍️ LinkUp Marketplace</div>
@@ -397,44 +395,40 @@ def show_home():
                 Post ads with photos & videos of your products • Browse services with real visuals • Connect directly with sellers<br>
                 Your one-stop marketplace for everything student services
             </div>
-            <div class="nav-alert-box">
-                <div class="nav-alert-text">
-                    <span class="nav-alert-emoji">👈</span> <strong>NEW HERE?</strong><br>
-                    Click the<strong>></strong>at the top left<br>
-                    to sign up & start exploring!
-                </div>
-            </div>
         </div>
     </div>""", unsafe_allow_html=True)
-    
-    
-    # Logo
-    try:
-        st.image("linkup_logo.png", use_container_width=True)
-    except:
-        pass
-    
-
     
     # CTA Section
     st.markdown('''<div class="cta-section">
         <div class="cta-title">Ready to Start?</div>
         <div class="cta-subtitle">Join hundreds of student entrepreneurs growing their businesses on LinkUp</div>
         <div style="background:rgba(255,255,255,0.2);padding:1.5rem;border-radius:15px;margin:2rem auto;max-width:600px;backdrop-filter:blur(10px);">
-            <div style="font-size:1.2rem;font-weight:600;margin-bottom:1rem;">🎉 For Sellers</div>
+            <div style="font-size:1.2rem;font-weight:600;margin-bottom:1rem;">For Sellers</div>
             <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Post unlimited ads for free</div>
             <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Reach thousands of potential customers</div>
             <div style="font-size:1rem;">✅ Grow your business today</div>
         </div>
         <div style="background:rgba(255,255,255,0.2);padding:1.5rem;border-radius:15px;margin:2rem auto;max-width:600px;backdrop-filter:blur(10px);">
-            <div style="font-size:1.2rem;font-weight:600;margin-bottom:1rem;">🛍️ For Buyers</div>
+            <div style="font-size:1.2rem;font-weight:600;margin-bottom:1rem;">For Buyers</div>
             <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Browse hundreds of verified services</div>
             <div style="font-size:1rem;margin-bottom:0.5rem;">✅ Compare prices and ratings</div>
             <div style="font-size:1rem;">✅ Connect instantly with providers</div>
         </div>
     </div>''', unsafe_allow_html=True)
     
-    # Footer
+
+    
+    # Nav Alert Box (moved here)
+    st.markdown("""<div class="nav-alert-container">
+        <div class="nav-alert-box">
+            <div class="nav-alert-text">
+                <span class="nav-alert-emoji">👈</span> <strong>NEW HERE?</strong><br>
+                Click the<strong>></strong>at the top left<br>
+                to sign up & start exploring!
+            </div>
+        </div>
+    </div>""", unsafe_allow_html=True)
+        # Footer
     st.markdown('''<div class="footer">
         <div style="font-size:1.3rem;font-weight:700;color:#2d3748;margin-bottom:1rem;">🛍️ LinkUp Marketplace</div>
         <div style="margin-bottom:1.5rem;">The #1 student marketplace for local services and businesses</div>
@@ -695,7 +689,7 @@ def show_login():
     # Modern header with animation
     st.markdown("""
     <div class="login-header">
-        <h1>🔐 Welcome Back</h1>
+        <h1>Welcome Back</h1>
         <p>Sign in to connect with services around you</p>
     </div>
     """, unsafe_allow_html=True)
@@ -740,27 +734,23 @@ def show_login():
     login_col1, login_col2 = st.columns([1, 2])
     with login_col1:
         login_clicked = st.button("🚪 Sign In")
+
     # Login logic
     if login_clicked:
-        user = find_user(email, password)
-        if user:
-            st.session_state.logged_in = True
-            st.session_state.current_user = user
-            st.session_state.selected_login_type = login_type
-
-            st.markdown(f"""
-            <div class="welcome-back">
-                ✅ <strong>Welcome back, {user['Name']}!</strong><br>
-                You're being redirected to your dashboard...
+        # Force reading current values (helps with autofill issues)
+        current_email = email.strip() if email else ""
+        current_password = password.strip() if password else ""
+        
+        # Additional validation
+        if not current_email or not current_password:
+            st.markdown("""
+            <div class="error-message">
+                ❌ <strong>Missing Information</strong><br>
+                Please enter both email and password.
             </div>
             """, unsafe_allow_html=True)
-            st.rerun()
         else:
-            # First attempt failed - clear cache and try again (in case user just registered)
-            with st.spinner("🔄 Refreshing user data..."):
-                st.cache_data.clear()
-                user = find_user(email, password)
-            
+            user = find_user(current_email, current_password)
             if user:
                 st.session_state.logged_in = True
                 st.session_state.current_user = user
@@ -774,13 +764,31 @@ def show_login():
                 """, unsafe_allow_html=True)
                 st.rerun()
             else:
-                # Still failed after cache clear - credentials are actually wrong
-                st.markdown("""
-                <div class="error-message">
-                    ❌ <strong>Invalid credentials</strong><br>
-                    Please check your email and password and try again.
-                </div>
-                """, unsafe_allow_html=True)
+                # First attempt failed - clear cache and try again (in case user just registered)
+                with st.spinner("🔄 Refreshing user data..."):
+                    st.cache_data.clear()
+                    user = find_user(current_email, current_password)
+                
+                if user:
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = user
+                    st.session_state.selected_login_type = login_type
+
+                    st.markdown(f"""
+                    <div class="welcome-back">
+                        ✅ <strong>Welcome back, {user['Name']}!</strong><br>
+                        You're being redirected to your dashboard...
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.rerun()
+                else:
+                    # Still failed after cache clear - credentials are actually wrong
+                    st.markdown("""
+                    <div class="error-message">
+                        ❌ <strong>Invalid credentials</strong><br>
+                        Please check your email and password and try again.
+                    </div>
+                    """, unsafe_allow_html=True)
     # Stylish divider
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     # Forgot password section
@@ -1433,7 +1441,7 @@ def Talent_Zone():
     }
     
     .section-header {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 1.5rem;
         border-radius: 12px;
@@ -2062,7 +2070,7 @@ def Talent_Zone():
         # Safety tips
         st.markdown("""
         <div class="safety-tips">
-            <h3>🔒 Smart Transaction Guidelines</h3>
+            <h3>Smart Transaction Guidelines</h3>
             <ul>
                 <li><strong>💳 Payment Protection:</strong> Always pay AFTER receiving satisfactory service delivery</li>
                 <li><strong>🔍 Verify First:</strong> Check reviews, ratings, and previous work samples before engaging</li>
@@ -2139,33 +2147,33 @@ def Talent_Zone():
 
 
     # Display Existing Services
-    st.markdown('<div class="section-header">🔍 Explore Available Services</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Explore Available Services</div>', unsafe_allow_html=True)
 
     try:
         records = fetch_services()
 
         # Stats Section (keeping your existing logic)
         if records:
-            total_services = len(records)
-            avg_price = sum([r["fields"].get("Price", 0) for r in records]) / len(records) if records else 0
-            unique_categories = len(set([r["fields"].get("Title", "Others") for r in records]))
+            # total_services = len(records)
+            # avg_price = sum([r["fields"].get("Price", 0) for r in records]) / len(records) if records else 0
+            # unique_categories = len(set([r["fields"].get("Title", "Others") for r in records]))
             
-            st.markdown(f"""
-            <div class="stats-container">
-                <div class="stat-card">
-                    <span class="stat-number">{total_services}</span>
-                    <span class="stat-label">Total Services</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">₦{avg_price:,.0f}</span>
-                    <span class="stat-label">Avg Price</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">{unique_categories}</span>
-                    <span class="stat-label">Categories</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            # st.markdown(f"""
+            # <div class="stats-container">
+            #     <div class="stat-card">
+            #         <span class="stat-number">{total_services}</span>
+            #         <span class="stat-label">Total Services</span>
+            #     </div>
+            #     <div class="stat-card">
+            #         <span class="stat-number">₦{avg_price:,.0f}</span>
+            #         <span class="stat-label">Avg Price</span>
+            #     </div>
+            #     <div class="stat-card">
+            #         <span class="stat-number">{unique_categories}</span>
+            #         <span class="stat-label">Categories</span>
+            #     </div>
+            # </div>
+            # """, unsafe_allow_html=True)
             # --- Modern Search & Filter Bar (Streamlit-native, not markdown) ---
             with st.container():
                 st.markdown("""
@@ -2180,27 +2188,27 @@ def Talent_Zone():
                 """, unsafe_allow_html=True)
                 col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
                 with col1:
-                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">🔍 Search</span>', unsafe_allow_html=True)
+                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">Search</span>', unsafe_allow_html=True)
                     search_query = st.text_input("", placeholder="e.g., design, development", key="search_query")
                 with col2:
-                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">🎯 Category</span>', unsafe_allow_html=True)
+                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">Category</span>', unsafe_allow_html=True)
                     selected_title = st.selectbox(
                         "",
                         options=["All"] + sorted(set([r["fields"].get("Title", "Others") for r in records])),
                         key="selected_title"
                     )
                 with col3:
-                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">💰 Sort</span>', unsafe_allow_html=True)
-                    sort_order = st.radio(
+                    st.markdown('<span style="font-weight:600; color:#2c3e50; font-size:1rem;">Sort</span>', unsafe_allow_html=True)
+                    sort_order = st.selectbox(
                         "",
                         ["None", "Price: Low to High", "Price: High to Low", "Highest Rated"],
+                        label_visibility="collapsed",
                         key="sort_order"
                     )
                 with col4:
                     st.markdown('<span style="font-weight:600; color:#27ae60; font-size:1rem;">✓ Verified Only</span>', unsafe_allow_html=True)
                     show_verified_only = st.checkbox("", key="show_verified_only")
                 st.markdown("</div>", unsafe_allow_html=True)
-
 
             # --- End Modern Search & Filter Bar ---
 # After filtering/sorting, before showing results grid
@@ -2234,10 +2242,11 @@ def Talent_Zone():
                 )
             # (Keep your Python logic for filtering/sorting as before)
             if search_query:
+                search_query_lower = search_query.lower()  # Convert search to lowercase
                 records = [
                     r for r in records
-                    if search_query in r["fields"].get("Title", "").lower()
-                    or search_query in r["fields"].get("Description", "").lower()
+                    if search_query_lower in r["fields"].get("Title", "").lower()
+                    or search_query_lower in r["fields"].get("Description", "").lower()
                 ]
 
             if selected_title != "All":
@@ -2262,8 +2271,6 @@ def Talent_Zone():
                 # Grid Header with Results Count
                 st.markdown(f"""
                 <div class="grid-header">
-                    <div class="results-count">📋 Found {len(records)} Service(s)</div>
-                </div>
                 """, unsafe_allow_html=True)
                         
             # Create marketplace grid using Streamlit columns
@@ -2332,7 +2339,7 @@ def Talent_Zone():
                                         {f'<img src="{profile_image_url}" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #764ba2;">' if profile_image_url else '<div style="width:36px;height:36px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#aaa;">👤</div>'}
                                         <span style="font-weight:600;color:#2c3e50;font-size:1rem;">{requester}</span>
                                     </div>
-                                    <div style="font-size: 1.2rem; font-weight: 700; color: #e74c3c; margin-bottom: 8px;">₦{price:,}</div>
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #000000; margin-bottom: 8px;">₦{price:,}</div>
                                     <div style="font-size: 1rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px; line-height: 1.3;">{short_title}</div>
                                     <div style="font-size: 0.85rem; color: #666; line-height: 1.4; margin-bottom: 12px;">{short_description}</div>
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; color: #777;">
@@ -2431,7 +2438,15 @@ def Talent_Zone():
 #Profile in talent zone
 def view_talent_profile():
     
-    # --- Back Button ---
+# --- Back Button with Custom CSS ---
+    st.markdown("""
+        <style>
+        button[kind="secondary"] p {
+            font-weight: 700 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col1:
         if st.button("← Back to 🔎 Explore Services", type="secondary", use_container_width=True):
@@ -2474,24 +2489,36 @@ def view_talent_profile():
             st.markdown("""
             <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-start; margin-bottom: 12px;">
             """, unsafe_allow_html=True)
+
             image_prices = fields.get("Image_Prices", "").split("\n")
+            image_names = fields.get("Image_Names", "").split("\n")  # ADD THIS LINE
+
             for i, url in enumerate(image_urls):
+                # Get price
                 image_price = image_prices[i].strip() if i < len(image_prices) else ""
                 if image_price and image_price.isdigit():
                     price_text = f"₦{int(image_price):,}"
                 else:
                     price_text = f"₦{price:,}" if price > 0 else "Contact for price"
+                
+                # Get product name - ADD THIS
+                product_name = image_names[i].strip() if i < len(image_names) and image_names[i].strip() else "Product"
+                
                 st.markdown(
                     f'''
-                    <div style="flex: 0 1 180px; text-align: center;">
+                    <div style="flex: 0 1 auto; display: flex; align-items: center; gap: 12px;">
                         <a href="{url}" target="_blank" title="Click to expand">
-                            <img src="{url}" style="width:180px;height:120px;object-fit:cover;border-radius:16px;border:2px solid #eee;display:block;margin:auto;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+                            <img src="{url}" style="width:180px;height:120px;object-fit:cover;border-radius:16px;border:2px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
                         </a>
-                        <div style="font-weight:600;color:#e74c3c;text-align:center;">{price_text}</div>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <div style="font-weight:700;color:#4a5568;font-size:1.1rem;">{product_name}</div>
+                            <div style="font-weight:600;color:#4a5568;font-size:1.05rem;">{price_text}</div>
+                        </div>
                     </div>
                     ''',
                     unsafe_allow_html=True
                 )
+            st.markdown("</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
             st.caption(f"Image {img_idx+1} of {len(image_urls)}")
 
@@ -2928,6 +2955,12 @@ def update_profile():
                 placeholder="e.g.\n5000\n7000\n6000",
                 help="Enter a price for each image above, one per line. Leave blank to use the general price."
             )
+            image_names = st.text_area(
+                "🏷️ Product Names (one per line, matching each image above)",
+                value=fields.get("Image_Names", ""),
+                placeholder="e.g.\nAirpods Pro\nSmart Watch\niPhone Case",
+                help="Enter a product name for each image above, one per line."
+            )
             new_uploaded_videos = st.file_uploader(
                 "🎥 Upload Short Videos (Max 30 secs)", 
                 accept_multiple_files=True, 
@@ -3017,6 +3050,7 @@ def update_profile():
                     "Works": "\n".join(combined_urls) if combined_urls else None,
                     "Vids": "\n".join(combined_vids) if combined_vids else None,
                     "Image_Prices": image_prices,
+                    "Image_Names": image_names,
                     "Telegram_Username": new_telegram_username
                 }
             }
@@ -3597,6 +3631,7 @@ Thank you! 🙏"""
     
     st.session_state.page = None
 # ------------------ Navigation ------------------
+# ------------------ Navigation ------------------
 # Enhanced Navigation with improved UI/UX and Mobile Responsiveness
 
 # Custom CSS for enhanced styling with mobile optimization
@@ -3613,6 +3648,15 @@ st.markdown("""
         font-weight: bold;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         position: relative;
+    }
+    
+    .nav-logo-container {
+        background: white;
+        padding: 0.8rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
     /* Mobile-friendly close button */
@@ -3655,7 +3699,7 @@ st.markdown("""
     }
     
     .user-info {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 0.8rem;
         border-radius: 8px;
         margin-bottom: 1rem;
@@ -3884,17 +3928,21 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 """, unsafe_allow_html=True)
 
-# Enhanced Navigation Header with prominent close instruction
-st.sidebar.markdown("""
-<div class="nav-header">
-    <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">🔗 Navigation Hub</div>
-    <div style="font-size: 0.8rem; opacity: 0.9;">
-        📱 Swipe left or tap outside to close
+# Logo Display - Replace Navigation Header
+try:
+    st.sidebar.image("linkup_logo.png", use_container_width=True)
+except:
+    # Fallback if logo doesn't exist
+    st.sidebar.markdown("""
+    <div class="nav-header">
+        <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">🔗 LinkUp</div>
+        <div style="font-size: 0.8rem; opacity: 0.9;">
+            📱 Swipe left or tap outside to close
+        </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# Sidebar close instruction (replace your button)
+# Sidebar close instruction
 st.sidebar.markdown("""
 <div style="text-align:center; margin:1rem 0;">
     <span style="font-size:1.2rem;">✕</span>
@@ -3944,11 +3992,10 @@ else:
     """, unsafe_allow_html=True)
 
 # Navigation Logic with Enhanced Organization
-# Add this to your navigation logic (replace the logged-in user section)
 if not st.session_state.logged_in:
     # Guest Navigation 
     st.sidebar.markdown('<div class="nav-section-title">🌟 Get Started</div>', unsafe_allow_html=True)
-    page = st.sidebar.radio("Choose your path:", ["🏠 Home", "🔐 Login", "✍️ Sign Up"], key="nav_guest")
+    page = st.sidebar.radio("Choose your path:", ["Home", "Login", "Sign Up"], key="nav_guest")
 else:
     # Check if user is admin
     is_admin = is_admin_user()
@@ -3957,43 +4004,43 @@ else:
     if is_admin:
         # Admin Navigation
         st.sidebar.markdown('<div class="nav-section-title">⚙️ Admin Panel</div>', unsafe_allow_html=True)
-        admin_options = ["🏠 Home", "📢 Manage Announcements"]
+        admin_options = ["Home", "Manage Announcements"]
         
         st.sidebar.markdown('<div class="nav-section-title">👤 Account</div>', unsafe_allow_html=True)
-        account_options = ["🚪 Logout"]
-        
+        account_options = ["Logout"]
+
         all_options = admin_options + account_options
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_admin")
         
     elif user_type == "Business":
         # Business User Navigation with Verification
         st.sidebar.markdown('<div class="nav-section-title">💼 Business Hub</div>', unsafe_allow_html=True)
-        main_options = ["🔎 Explore Services","✍️ Update Profile", "💬 Chats","⚙️ Post/Update Your Business/Service profile"]
+        main_options = [ "Explore Services", "Update Profile", "Chats", "Post/Update Your Business/Service profile"]
     
-        all_options = main_options + ["🚪 Logout"]
+        all_options = main_options + ["Logout"]
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_business")
         
     elif user_type == "Student":
         # Student User Navigation with Dashboard
         st.sidebar.markdown('<div class="nav-section-title">🎯 Main Hub</div>', unsafe_allow_html=True)
-        main_options = ["🔎 Explore Services","✍️ Update Profile","⚙️ Post/Update Your Business/Service profile"]
+        main_options = ["Explore Services", "Update Profile", "Post/Update Your Business/Service profile"]
         
-        all_options = main_options + ["🚪 Logout"]
+        all_options = main_options + ["Logout"]
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_student")
         
     else:  # user_type == "Both"
         # Both User Navigation with Verification
         st.sidebar.markdown('<div class="nav-section-title">🎯 Main Hub</div>', unsafe_allow_html=True)
-        main_options = [ "🔎 Explore Services","✍️ Update Profile","⚙️ Post/Update Your Business/Service profile"]
+        main_options = [ "Explore Services", "Update Profile", "Post/Update Your Business/Service profile"]
   
-        all_options = main_options + ["🚪 Logout"]
+        all_options = main_options + ["Logout"]
         page = st.sidebar.radio("Navigate to:", all_options, key="nav_both")
         
     # Handle special page redirects from session state
     if st.session_state.get("page") == "view_talent":
-        page = "🔍 View Talent"
+        page = "View Talent"
     elif st.session_state.get("page") == "chat":
-        page = "💬 Chats"
+        page = "Chats"
     elif st.session_state.get("page") == "post_request":
         page = "post_request"
     elif st.session_state.get("page") == "Talents":
@@ -4001,18 +4048,18 @@ else:
     elif st.session_state.get("page") == "Talent zone":
         page = "Talent zone"
     elif st.session_state.get("page") == "verification":
-        page = "✅ Get Verified"
+        page = "Get Verified"
 
-# Page Routing Logic (unchanged to preserve functionality)
-if page == "🏠 Home":
+# Page Routing Logic
+if page == "Home":
     show_home()
-elif page == "🔐 Login":
+elif page == "Login":
     show_login()
-elif page == "✍️ Sign Up":
+elif page == "Sign Up":
     show_sign_up_or_update()
-elif page == "✍️ Update Profile":
+elif page == "Update Profile":
     show_sign_up_or_update()
-elif page == "🚪 Logout":
+elif page == "Logout":
     # Enhanced logout confirmation
     st.sidebar.markdown("""
     <div class="logout-warning">
@@ -4025,28 +4072,28 @@ elif page == "🚪 Logout":
         st.session_state.current_user = {}
         st.success("✅ Successfully logged out!")
         st.rerun()
-elif page == "💬 Chats":
+elif page == "Chats":
     show_chats()
-elif page == "🛠 Talent Zone":
+elif page == "Talent Zone":
     Talent_Zone()
-elif page == "📥 Service Requests":
+elif page == "Service Requests":
     post_request()
-elif page == "🔍 View Talent":
+elif page == "View Talent":
     view_talent_profile()
 elif page == "post_request":
     post_request()
 elif page == "Talents":
     Talent_Zone()
-elif page == "🔎 Explore Services":
+elif page == "Explore Services":
     Talent_Zone()
-elif page == "⚙️ Post/Update Your Business/Service profile":
+elif page == "Post/Update Your Business/Service profile":
     update_profile()
-elif page == "📢 Manage Announcements":
+elif page == "Manage Announcements":
     if is_admin_user():
         show_admin_announcements()
     else:
         st.error("⚠️ Access denied. Admin privileges required.")
-elif page == "🏫 School Dashboard":
+elif page == "School Dashboard":
     show_student_dashboard()
-elif page == "✅ Get Verified":
+elif page == "Get Verified":
     show_verification_page()
