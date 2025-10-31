@@ -3930,7 +3930,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 # Logo Display - Replace Navigation Header
 try:
-    st.sidebar.image("linkup_logo.png", use_container_width=True)
+    st.sidebar.image("linkup_logo.PNG", use_container_width=True)
 except:
     # Fallback if logo doesn't exist
     st.sidebar.markdown("""
@@ -4097,3 +4097,4 @@ elif page == "School Dashboard":
     show_student_dashboard()
 elif page == "Get Verified":
     show_verification_page()
+
