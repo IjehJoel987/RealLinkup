@@ -2355,7 +2355,7 @@ def Talent_Zone():
                                     </div>
                                     {f'<div style="font-size:0.95rem;color:#6c757d;margin-bottom:6px;"><s>Vendor price: ₦{int(vendor_price_num):,}</s></div>' if vendor_price_num else 'Student business'}
                                     <div style="font-size: 1.2rem; font-weight: 700; color: #000000; margin-bottom: 8px;">LinkUp price: ₦{price:,}</div>
-                                    {f'<div style="font-size:0.95rem;color:#28a745;font-weight:700;margin-top:4px;">You save: ₦{max(0, int(vendor_price_num - float(price))):,}</div>' if vendor_price_num is not None else 'Student business'}
+                                    {f'<div style="font-size:0.95rem;color:#28a745;font-weight:700;margin-top:4px;">You save: ₦{max(0, int(vendor_price_num - float(price))):,}</div>' if vendor_price_num is not None else '----'}
                                     <div style="font-size: 1rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px; line-height: 1.3;">{short_title}</div>
                                     <div style="font-size: 0.85rem; color: #666; line-height: 1.4; margin-bottom: 12px;">{short_description}</div>
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; color: #777;">
