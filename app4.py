@@ -2282,8 +2282,11 @@ def Talent_Zone():
                 for idx, record in enumerate(batch):
                     fields = record.get("fields", {})
                     requester = fields.get("Name", "Unknown")
-                    # Add this block:
+                    # Add this block: read vendor price from the service (Talent) record, and lookup profile image from users
                     profile_image_url = ""
+                    # Vendor price should live on the Talent/service record as a numeric field named one of:
+                    # 'Vendor_Price', 'Vendor Price', or 'VendorPrice' (use one of these names in Airtable)
+                    vendor_price_raw = fields.get("Vendor_Price") or fields.get("Vendor Price") or fields.get("VendorPrice")
                     for user in fetch_users():
                         user_fields = user.get("fields", {})
                         if user_fields.get("Name") == requester:
@@ -2292,6 +2295,13 @@ def Talent_Zone():
                     title = fields.get("Title", "No Title")
                     description = fields.get("Description", "No description")
                     price = fields.get("Price", 0)
+                    # Try to parse vendor price (from talent/user record) safely into a number
+                    vendor_price_num = None
+                    try:
+                        if vendor_price_raw is not None and str(vendor_price_raw).strip() != "":
+                            vendor_price_num = float(str(vendor_price_raw).replace(",", ""))
+                    except Exception:
+                        vendor_price_num = None
                     record_id = record["id"]
 
                     # Calculate rating info
@@ -2339,7 +2349,9 @@ def Talent_Zone():
                                         {f'<img src="{profile_image_url}" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #764ba2;">' if profile_image_url else '<div style="width:36px;height:36px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#aaa;">👤</div>'}
                                         <span style="font-weight:600;color:#2c3e50;font-size:1rem;">{requester}</span>
                                     </div>
-                                    <div style="font-size: 1.2rem; font-weight: 700; color: #000000; margin-bottom: 8px;">₦{price:,}</div>
+                                    {f'<div style="font-size:0.95rem;color:#6c757d;margin-bottom:6px;"><s>Vendor price: ₦{int(vendor_price_num):,}</s></div>' if vendor_price_num else ''}
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #000000; margin-bottom: 8px;">LinkUp price: ₦{price:,}</div>
+                                    {f'<div style="font-size:0.95rem;color:#28a745;font-weight:700;margin-top:4px;">You save: ₦{max(0, int(vendor_price_num - float(price))):,}</div>' if vendor_price_num is not None else ''}
                                     <div style="font-size: 1rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px; line-height: 1.3;">{short_title}</div>
                                     <div style="font-size: 0.85rem; color: #666; line-height: 1.4; margin-bottom: 12px;">{short_description}</div>
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; color: #777;">
@@ -3930,7 +3942,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 # Logo Display - Replace Navigation Header
 try:
-    st.sidebar.image("linkup_logo.PNG", use_container_width=True)
+    st.sidebar.image("linkup_logo.png", use_container_width=True)
 except:
     # Fallback if logo doesn't exist
     st.sidebar.markdown("""
@@ -4097,5 +4109,3 @@ elif page == "School Dashboard":
     show_student_dashboard()
 elif page == "Get Verified":
     show_verification_page()
-
-
