@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 import cloudinary
 import cloudinary.uploader
 import time    
+import re
+import html as html_lib
 from streamlit_autorefresh import st_autorefresh
 import urllib.parse
 
@@ -2327,8 +2329,10 @@ def Talent_Zone():
                         if urls:
                             image_url = urls[0]
 
-                    # Truncate text for card display
-                    short_description = description[:80] + "..." if len(description) > 80 else description
+                    # Sanitize and truncate text for card display (remove any embedded HTML)
+                    safe_desc = html_lib.unescape(str(description or ""))
+                    safe_desc = re.sub(r'<[^>]+>', '', safe_desc)
+                    short_description = safe_desc[:80] + "..." if len(safe_desc) > 80 else safe_desc
                     short_title = title[:40] + "..." if len(title) > 40 else title
 
                     with cols[idx]:
