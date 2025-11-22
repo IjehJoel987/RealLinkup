@@ -2323,20 +2323,6 @@ def Talent_Zone():
 
                     with cols[idx]:
                         with st.container():
-                            # Read vendor price (support multiple possible field names) and compute savings
-                            vendor_price_raw = fields.get("Vendor Price") or fields.get("Vendor_Price") or fields.get("vendor_price")
-                            try:
-                                vendor_price = int(float(vendor_price_raw)) if vendor_price_raw not in (None, "") else None
-                            except Exception:
-                                vendor_price = None
-
-                            try:
-                                price_val = int(float(price)) if price is not None else 0
-                            except Exception:
-                                price_val = 0
-
-                            savings = (vendor_price - price_val) if (vendor_price is not None and price_val is not None and vendor_price > price_val) else 0
-
                             st.markdown(f"""
                             <div style="background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; margin-bottom: 20px; position: relative;">
                                 <div style="width: 100%; height: 200px; background: #f8f9fa; position: relative; overflow: hidden;">
@@ -2353,16 +2339,8 @@ def Talent_Zone():
                                         {f'<img src="{profile_image_url}" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #764ba2;">' if profile_image_url else '<div style="width:36px;height:36px;background:#eee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#aaa;">👤</div>'}
                                         <span style="font-weight:600;color:#2c3e50;font-size:1rem;">{requester}</span>
                                     </div>
-                                    <!-- Product pricing block: Product, Vendor Price (slashed), LinkUp Price (bold), You Save -->
-                                    
-                                    <!-- Product pricing computed in Python above -->
-
-                                    <div style="font-size:0.95rem;color:#6b7280;margin-bottom:6px;">Product: <span style="font-weight:700;color:#111;">{short_title}</span></div>
-                                    <div style="margin-bottom:6px;">
-                                        {('%s' % (f'<span style="font-size:0.95rem;color:#9aa0a6;">Vendor Price: <span style="text-decoration:line-through;color:#9aa0a6;">₦{vendor_price:,}</span></span>' ) ) if vendor_price else ''}
-                                    </div>
-                                    <div style="font-size:1.2rem;font-weight:800;color:#23272f;margin-bottom:6px;">LinkUp Price: ₦{price:,}</div>
-                                    {('%s' % (f'<div style="font-size:1rem;font-weight:700;color:#27ae60;">You Save: ₦{savings:,}</div>' ) ) if savings and savings>0 else ''}
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #000000; margin-bottom: 8px;">₦{price:,}</div>
+                                    <div style="font-size: 1rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px; line-height: 1.3;">{short_title}</div>
                                     <div style="font-size: 0.85rem; color: #666; line-height: 1.4; margin-bottom: 12px;">{short_description}</div>
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; color: #777;">
                                         <div style="display: flex; align-items: center; gap: 5px;">
@@ -3952,7 +3930,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 # Logo Display - Replace Navigation Header
 try:
-    st.sidebar.image("linkup_logo.png", use_container_width=True)
+    st.sidebar.image("linkup_logo.PNG", use_container_width=True)
 except:
     # Fallback if logo doesn't exist
     st.sidebar.markdown("""
@@ -4119,3 +4097,5 @@ elif page == "School Dashboard":
     show_student_dashboard()
 elif page == "Get Verified":
     show_verification_page()
+
+
